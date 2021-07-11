@@ -98,7 +98,7 @@ public class GameActivity extends AppCompatActivity {
                         }
                     };
                     Timer timer = new Timer();
-                    timer.schedule(task, 1000);//3秒后执行TimeTask的run方法
+                    timer.schedule(task, 1000);//1秒后执行TimeTask的run方法
                 }
 
             }
