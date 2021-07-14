@@ -4,9 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.GridLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,10 +24,10 @@ import java.util.List;
 import java.util.Random;
 
 public class PlayActivity extends AppCompatActivity {
-
     String filepath = "game_cards";
     String filename = "image";
-    TextView timerView;
+    private Button start;
+    Chronometer timerView;
     TextView movesView;
     int numberOfButtons;
     GameCard[] buttons;
@@ -36,6 +40,9 @@ public class PlayActivity extends AppCompatActivity {
     private int matchesCounter = 0;
     private int totalClicks = 0;
     private Handler handler;
+    private boolean startCount = true;
+    private  boolean isFalse = false;
+    private ProgressBar pgbar;
 
 //    private long secondElapsed;
 //
@@ -49,9 +56,10 @@ public class PlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-
+        start = findViewById(R.id.startButton);
         timerView = findViewById(R.id.timerView);
         movesView = findViewById(R.id.movesView);
+        pgbar = findViewById(R.id.pgbar);
         handler = new Handler();
 
         // get images from drawable and save inside app-specific external folder
@@ -60,6 +68,9 @@ public class PlayActivity extends AppCompatActivity {
 
         // load images on screen
         showImages();
+    }
+    private void setStartButton(Button start){
+
     }
 
     void saveImages(){
@@ -139,7 +150,14 @@ public class PlayActivity extends AppCompatActivity {
                 tempButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(isFalse)
+                            return;
                         flip(view);
+                        pgbar.setProgress(matchesCounter);
+                        if(startCount){
+                            setTimerView(timerView);
+                            startCount = false;
+                        }
                     }
                 });
 
@@ -178,6 +196,7 @@ public class PlayActivity extends AppCompatActivity {
             //updating match progress
             if(matchesCounter == 6){
                 movesView.setText("Congrats!");
+                timerView.stop();
             }
             else{
                 movesView.setText("Moves: " + totalClicks);
@@ -222,4 +241,21 @@ public class PlayActivity extends AppCompatActivity {
 //        int drawableID = this.getResources().getIdentifier("bitmap0", "drawable", getPackageName());
 //        iv.setImageResource(drawableID);
     }*/
+    private void setTimerView(Chronometer timerView){
+        timerView.setBase(SystemClock.elapsedRealtime());
+        timerView.setFormat("%s");
+        timerView.start();
+        timerView.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                if(SystemClock.elapsedRealtime() - timerView.getBase() >= 30000){
+                    timerView.stop();
+                    isFalse=true;
+                    movesView.setText("You Lose!");
+                    matchesCounter =6;
+
+                }
+            }
+        });
+    }
 }
