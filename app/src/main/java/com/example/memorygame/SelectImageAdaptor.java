@@ -58,17 +58,4 @@ public class SelectImageAdaptor extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-//    public Integer[] mThumbIds = {
-//            R.drawable.card_back, R.drawable.card_back,
-//            R.drawable.card_back, R.drawable.card_back,
-//            R.drawable.card_back, R.drawable.card_back,
-//            R.drawable.card_back, R.drawable.card_back,
-//            R.drawable.card_back, R.drawable.card_back,
-//            R.drawable.card_back, R.drawable.card_back,
-//            R.drawable.card_back, R.drawable.card_back,
-//            R.drawable.card_back, R.drawable.card_back,
-//            R.drawable.card_back, R.drawable.card_back,
-//            R.drawable.card_back, R.drawable.card_back
-//    };
-
 }

@@ -18,9 +18,9 @@ public class ImageDownloader {
 
             String[] imgUrls = new String[20];
             for (int i = 0; i<20; i++){
-                String imgUrl = document.select("img[src^=https]")
-                        .eq(i)
-                        .attr("src");
+                String imgUrl = document.select("img[src^=https]")          //select all the img tags with src starting https
+                        .eq(i)          //select the i'th item
+                        .attr("src");           //grab the info from attr src
 
                 imgUrls[i]=imgUrl;
             }

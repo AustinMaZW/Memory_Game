@@ -19,6 +19,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
+import android.widget.ViewSwitcher;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -37,17 +39,20 @@ public class MainActivity extends AppCompatActivity {
     //views
     private AppCompatButton fetchButton;
     private EditText fetchUrl;
-    private Thread dlThread;
     private ProgressBar progressBar;
+    private ViewFlipper viewFlipper;
     private TextView progressTextView;
+    private AppCompatButton startGameBtn;
     private GridView gridView;
     private SelectImageAdaptor mImageAdaptor;
+
+    private Thread dlThread;
+    private boolean downloading = false;
 
     //config images
     private final int IMAGES_NO = 20;
     private List<String> selectedImgFileNames = new ArrayList<>();
     private Bitmap[] imgBmps = new Bitmap[20];
-//    private String[] imgUrls = new String[20]; //used array and not list to allow execute for DownloadImg
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +65,28 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(mImageAdaptor);
 
         progressBar = findViewById(R.id.progress_bar);
+        viewFlipper= findViewById(R.id.view_flipper);
         progressTextView = findViewById(R.id.progress_textview);
+        startGameBtn = findViewById(R.id.start_game);
 
         //below code to parse images
         fetchButton = findViewById(R.id.fetch_url);
         fetchButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                clearSettings(); //add more logic later
+                clearSettings();    //reset any settings
+                downloading=true;
+                progressTextView.setText("Download Starting...");
+                viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
                 fetchUrl = findViewById(R.id.url_input);
                 String url = fetchUrl.getText().toString();
                 startDownloadImage(url);
+            }
+        });
+
+        startGameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startGame();
             }
         });
     }
@@ -84,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 int imgBtnNo=0;
                 if(imgURLs==null){return;} //if there is no imgtags or invalid url so couldn't fetch tags, return
                 for (String imgURL: imgURLs) {
-                    if(Thread.interrupted()) {return;}
+                    if(Thread.interrupted()) { return; }
 
                     String destFilename = "image" + imgBtnNo;
                     File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -105,11 +122,15 @@ public class MainActivity extends AppCompatActivity {
                                 progressTextView.setText("Downloading " + finalImgNo + " of 20 images");
 
                                 if(progressPercent == 100) {
+                                    downloading=false;
                                     setImageOnClickListeners();
                                     progressTextView.setText("Select 6 images to start playing");
                                 }
                             }
                         });
+                    }else{
+                        System.out.println("im interrupted");
+                        return;
                     }
                 }
             }
@@ -131,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
                     itemView.setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
                     selectedImgFileNames.add(imageName);
                 }
-
                 checkSelectedImgs();
             }
         });
@@ -139,13 +159,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkSelectedImgs() {
         if(selectedImgFileNames.size() == 6) {
-            System.out.println("all 6 chosen, time to add logic for start game!");
-            startGame();
+            viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.start_game)));
         }
-        else if(selectedImgFileNames.size() == 0)
+        else if(selectedImgFileNames.size() == 0) {
             progressTextView.setText("Select 6 images to start playing");
-        else
+        }
+        else{
             progressTextView.setText(selectedImgFileNames.size() + " / 6 selected");
+            viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
+        }
     }
 
     public void startGame(){
@@ -154,14 +176,15 @@ public class MainActivity extends AppCompatActivity {
         String[] imgs = new String[selectedImgFileNames.size()];     //convert to string[] so i can pass to activity
         selectedImgFileNames.toArray(imgs);
         System.out.println("Array "+ Arrays.toString(imgs));
-        clearSettings();    //clear settings after extracting the imgs to array
+        clearSettings();            //clear settings after extracting the imgs to array
+        viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
 //        intent.putExtra("imgs", imgs);
 //        startActivity(intent);
     }
 
     public void clearSettings() {
-        if(dlThread!=null)
-            dlThread.interrupt();       //interrupt current thread
+        if(downloading)
+            dlThread.interrupt();       //interrupt current dlthread
 
         progressBar.setProgress(0);
         progressTextView.setText("Click 'FETCH' to download images");
@@ -173,82 +196,4 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(mImageAdaptor);     //reset view
         gridView.setOnItemClickListener(null);  //reset onclickerlistener
     }
-    //old code for 2 threads, but problem was race condition for setting file name since using imgBtnNo++
-//    public void fetchImages() {
-//        fetchUrl = findViewById(R.id.url_input);
-//        String url = fetchUrl.getText().toString();
-//        new Thread(new Runnable(){
-//            @Override
-//            public void run(){
-//                try {
-//                    Document document = Jsoup.connect(url).get();
-//
-//                    for (int i = 0; i<20; i++){
-//                        String imgUrl = document.select("img[src^=https]")
-//                                .eq(i)
-//                                .attr("src");
-//
-//                        startDownloadImage(imgUrl);
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-//    }
-
-    //old codes using AsyncTask
-//    public void fetchImages() {
-//        fetchUrl = findViewById(R.id.url_input);
-//        ImgSrc imgSrc = new ImgSrc();
-//        imgSrc.execute(fetchUrl.getText().toString());      //input is one url only
-//
-//        DownloadImg downloadImg = new DownloadImg(this);
-//        downloadImg.execute(imgUrls);
-//    }
-
-//    private class ImgSrc extends AsyncTask<String, Void, Void> {
-//        @Override
-//        protected void onPreExecute(){
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected Void doInBackground(String... urls){
-//
-//            try {
-//                String url = urls[0];   //input is one url, so just grab the first index
-//                //String url = "https://stocksnap.io/"; //hard coding here for testing purpose, delete later
-//                Document document = Jsoup.connect(url).get();
-//
-//                for (int i = 0; i<20; i++){
-//                    String imgUrl = document.select("img[src^=https]")
-//                            .eq(i)
-//                            .attr("src");
-//
-//                    imgUrls[i]=imgUrl;
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return null;
-//        }
-//
-//        // delete below if not needed later
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//
-//        }
-//    }
-//    public void downloadComplete(Bitmap bitmap){
-//        // add logic to get images after send by downloadImg
-//        ImageButton imageButton = findViewById(getResources()
-//                .getIdentifier("imageButton" + imgBtnNo, "id", getPackageName()));
-//
-//        // didn't add setTag here, can be used for onClick
-//        imageButton.setImageBitmap(bitmap);
-//        imageButton.setAdjustViewBounds(true);
-//        imgBtnNo++;
-//    }
 }
