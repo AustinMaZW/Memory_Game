@@ -1,5 +1,6 @@
 package com.example.memorygame;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.Chronometer;
 import android.widget.GridLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,7 +28,6 @@ import java.util.Random;
 public class PlayActivity extends AppCompatActivity {
     String filepath = "game_cards";
     String filename = "image";
-    private Button start;
     Chronometer timerView;
     TextView movesView;
     int numberOfButtons;
@@ -43,6 +44,8 @@ public class PlayActivity extends AppCompatActivity {
     private boolean startCount = true;
     private  boolean isFalse = false;
     private ProgressBar pgbar;
+    private TextView progressInfo;
+    private Intent intent;
 
 //    private long secondElapsed;
 //
@@ -56,11 +59,12 @@ public class PlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-        start = findViewById(R.id.startButton);
         timerView = findViewById(R.id.timerView);
         movesView = findViewById(R.id.movesView);
         pgbar = findViewById(R.id.pgbar);
         handler = new Handler();
+        progressInfo = findViewById(R.id.progressInfo);
+        intent = new Intent(this,MainActivity.class);
 
         // get images from drawable and save inside app-specific external folder
         // for testing purpose only. will delete after combining with activity1
@@ -154,6 +158,8 @@ public class PlayActivity extends AppCompatActivity {
                             return;
                         flip(view);
                         pgbar.setProgress(matchesCounter);
+                        progressInfo.setText(String.format("%s / %s",matchesCounter,6));
+
                         if(startCount){
                             setTimerView(timerView);
                             startCount = false;
@@ -197,6 +203,7 @@ public class PlayActivity extends AppCompatActivity {
             if(matchesCounter == 6){
                 movesView.setText("Congrats!");
                 timerView.stop();
+                startActivity(intent);
             }
             else{
                 movesView.setText("Moves: " + totalClicks);
@@ -253,7 +260,6 @@ public class PlayActivity extends AppCompatActivity {
                     isFalse=true;
                     movesView.setText("You Lose!");
                     matchesCounter =6;
-
                 }
             }
         });

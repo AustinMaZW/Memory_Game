@@ -19,8 +19,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_gravity="center">
-            <!-- added 6 radio buttons just for show. replace with images(imageView or something) later-->
+            android:layout_gravity="center"
+            android:orientation="vertical">
+<!--             added 6 radio buttons just for show. replace with images(imageView or something) later-->
 <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
 <!--                android:layout_width="wrap_content"-->
 <!--                android:layout_height="wrap_content"/>-->
@@ -41,49 +42,46 @@
 <!--                android:layout_height="wrap_content"/>-->
             <ProgressBar
                 android:id="@+id/pgbar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
                 android:layout_width="200dp"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:layout_marginRight="0dp"
+                android:layout_marginLeft="5dp"
                 android:max="6"
-                android:progress="6"
-                style="@android:style/Widget.ProgressBar.Horizontal"/>
+                android:progress="0"
+                android:progressTint="#8BC34A" />
+            <TextView
+                android:id="@+id/progressInfo"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="10sp"/>
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical"
-            android:layout_marginStart="30dp">
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="top">
             <Chronometer
                 android:id="@+id/timerView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:layout_marginLeft="10dp" />
             <TextView
                 android:id="@+id/movesView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/moves"
                 android:textSize="20sp"
-                android:layout_gravity="end"/>
+                android:layout_gravity="end"
+                android:layout_marginLeft="10dp"/>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical"
-            android:layout_marginStart="30dp">
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/startButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Answer"
-                android:textSize="10sp"
-                android:layout_gravity="end"/>
-        </LinearLayout>
-
     </LinearLayout>
 
     <GridLayout
