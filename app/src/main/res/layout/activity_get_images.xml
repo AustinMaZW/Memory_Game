@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/search_images"
+        android:id="@+id/search_images_text"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginLeft="5dp"
@@ -36,16 +36,16 @@
         app:layout_constraintHeight_percent="0.15">
 
         <ImageView
-            android:id="@+id/imageView_00"
+            android:id="@+id/imageView_0"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_01"
+            android:id="@+id/imageView_1"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_02"
+            android:id="@+id/imageView_2"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_03"
+            android:id="@+id/imageView_3"
             style="@style/image_card_style"/>
 
     </LinearLayout>
@@ -58,16 +58,16 @@
         app:layout_constraintHeight_percent="0.15">
 
         <ImageView
-            android:id="@+id/imageView_10"
+            android:id="@+id/imageView_4"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_11"
+            android:id="@+id/imageView_5"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_12"
+            android:id="@+id/imageView_6"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_13"
+            android:id="@+id/imageView_7"
             style="@style/image_card_style"/>
 
     </LinearLayout>
@@ -80,16 +80,16 @@
         app:layout_constraintHeight_percent="0.15">
 
         <ImageView
-            android:id="@+id/imageView_20"
+            android:id="@+id/imageView_8"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_21"
+            android:id="@+id/imageView_9"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_22"
+            android:id="@+id/imageView_10"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_23"
+            android:id="@+id/imageView_11"
             style="@style/image_card_style"/>
 
     </LinearLayout>
@@ -102,16 +102,16 @@
         app:layout_constraintHeight_percent="0.15">
 
         <ImageView
-            android:id="@+id/imageView_30"
+            android:id="@+id/imageView_12"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_31"
+            android:id="@+id/imageView_13"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_32"
+            android:id="@+id/imageView_14"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_33"
+            android:id="@+id/imageView_15"
             style="@style/image_card_style"/>
 
     </LinearLayout>
@@ -124,16 +124,16 @@
         app:layout_constraintHeight_percent="0.15">
 
         <ImageView
-            android:id="@+id/imageView_40"
+            android:id="@+id/imageView_16"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_41"
+            android:id="@+id/imageView_17"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_42"
+            android:id="@+id/imageView_18"
             style="@style/image_card_style"/>
         <ImageView
-            android:id="@+id/imageView_43"
+            android:id="@+id/imageView_19"
             style="@style/image_card_style"/>
 
     </LinearLayout>
@@ -148,11 +148,11 @@
         tools:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/download_progress_text"
+        app:layout_constraintBottom_toTopOf="@id/download_progress_textview"
         />
         
     <TextView
-        android:id="@+id/download_progress_text"
+        android:id="@+id/download_progress_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"

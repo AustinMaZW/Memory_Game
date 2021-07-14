@@ -7,4 +7,9 @@
         <item name="android:scaleType">centerCrop</item>
         <item name="android:clickable">true</item>
     </style>
+    <style name="gameTitle">
+
+
+    </style>
+
 </resources>
