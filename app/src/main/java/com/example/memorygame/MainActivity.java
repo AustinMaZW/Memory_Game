@@ -28,6 +28,7 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 clearSettings();    //reset any settings
                 downloading=true;
-                progressTextView.setText("Download Starting...");
                 viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
                 fetchUrl = findViewById(R.id.url_input);
                 String url = fetchUrl.getText().toString();
@@ -91,13 +91,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void startDownloadImage(String url) {
+    public void startDownloadImage(String url){
         //creating a background thread
         dlThread = new Thread(new Runnable() {
             @Override
-            public void run() {
+            public void run(){
                 ImageDownloader imgDL = new ImageDownloader();
-                String[] imgURLs = imgDL.fetchImageTags(url);
+                String[] imgURLs = new String[0];
+
+
+                imgURLs = imgDL.fetchImageTags(url);
+
                 int imgBtnNo=0;
                 if(imgURLs==null){return;} //if there is no imgtags or invalid url so couldn't fetch tags, return
                 for (String imgURL: imgURLs) {
@@ -124,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                                 if(progressPercent == 100) {
                                     downloading=false;
                                     setImageOnClickListeners();
-                                    progressTextView.setText("Select 6 images to start playing");
+                                    progressTextView.setText(R.string.select_6);
                                 }
                             }
                         });
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
             viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.start_game)));
         }
         else if(selectedImgFileNames.size() == 0) {
-            progressTextView.setText("Select 6 images to start playing");
+            progressTextView.setText(R.string.select_6);
         }
         else{
             progressTextView.setText(selectedImgFileNames.size() + " / 6 selected");
@@ -187,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
             dlThread.interrupt();       //interrupt current dlthread
 
         progressBar.setProgress(0);
-        progressTextView.setText("Click 'FETCH' to download images");
+        progressTextView.setText(R.string.click_fetch);
 
         Arrays.fill(imgBmps, null);         //clear stored bitmap array
         selectedImgFileNames.clear();

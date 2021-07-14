@@ -14,6 +14,8 @@ import java.net.URLConnection;
 public class ImageDownloader {
     protected String[] fetchImageTags(String url){
         try {
+            if (!url.startsWith("http://") && !url.startsWith("https://"))
+                url = "https://" + url;
             Document document = Jsoup.connect(url).get();
 
             String[] imgUrls = new String[20];
