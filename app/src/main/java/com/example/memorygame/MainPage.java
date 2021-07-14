@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class MainPage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (startGameBtn != null){
-                    Intent startGame = new Intent(MainActivity.this, selectImageActivity.class);
+                    Intent startGame = new Intent(MainPage.this, selectImageActivity.class);
                     startActivity(startGame);
                 }
             }
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (creditBtn != null){
-                    Intent viewCredits = new Intent(MainActivity.this, viewCreditsActivity.class);
+                    Intent viewCredits = new Intent(MainPage.this, viewCreditsActivity.class);
                     startActivity(viewCredits);
                 }
             }
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (descriptionBtn != null){
-                    Intent viewDescription = new Intent(MainActivity.this, viewDescriptionActivity.class);
+                    Intent viewDescription = new Intent(MainPage.this, viewDescriptionActivity.class);
                     startActivity(viewDescription);
                 }
 
