@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".viewDescriptionActivity">
+    <ImageView
+        android:id="@+id/description_icon"
+        android:layout_width="100dp"
+        android:layout_height="70dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/logo_transparent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/description_title"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:text="@string/the_memory_game"
+        android:textSize="32sp"
+        app:layout_constraintLeft_toRightOf="@id/description_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+    <Space
+        android:id="@+id/ds1"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        app:layout_constraintTop_toBottomOf="@id/description_icon"/>
+
+
+    <TextView
+        android:id="@+id/description_body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/description_overview"
+        android:textSize="30sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ds1"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <Space
+        android:id="@+id/ds2"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        app:layout_constraintTop_toBottomOf="@id/description_body"
+        />
+    <TextView
+        android:id="@+id/how_to_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ds2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="@string/how_to_play"
+        android:textSize="30sp"
+        />
+    <Space
+        android:id="@+id/ds3"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        app:layout_constraintTop_toBottomOf="@id/how_to_play"
+        />
+
+    <TextView
+        android:id="@+id/description_bod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/description_body"
+        android:textSize="30sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ds3"
+        app:layout_constraintWidth_percent="0.8" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
