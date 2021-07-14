@@ -19,7 +19,7 @@ public class MainPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (startGameBtn != null){
-                    Intent startGame = new Intent(MainPage.this, selectImageActivity.class);
+                    Intent startGame = new Intent(MainPage.this, MainActivity.class);
                     startActivity(startGame);
                 }
             }
