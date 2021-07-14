@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/search_images"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="15dp"
+        android:hint="Search: Animals, Flowers... / Html"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.74" />
+    <Button
+        android:id="@+id/search_images_button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="5dp"
+        android:text="search"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/image_view_row_0"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/image_view_row_1"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.15">
+
+        <ImageView
+            android:id="@+id/imageView_00"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_01"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_02"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_03"
+            style="@style/image_card_style"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/image_view_row_1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/image_view_row_2"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.15">
+
+        <ImageView
+            android:id="@+id/imageView_10"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_11"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_12"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_13"
+            style="@style/image_card_style"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/image_view_row_2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/image_view_row_3"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.15">
+
+        <ImageView
+            android:id="@+id/imageView_20"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_21"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_22"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_23"
+            style="@style/image_card_style"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/image_view_row_3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/image_view_row_4"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.15">
+
+        <ImageView
+            android:id="@+id/imageView_30"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_31"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_32"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_33"
+            style="@style/image_card_style"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/image_view_row_4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/download_progress_bar"
+        android:orientation="horizontal"
+        app:layout_constraintHeight_percent="0.15">
+
+        <ImageView
+            android:id="@+id/imageView_40"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_41"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_42"
+            style="@style/image_card_style"/>
+        <ImageView
+            android:id="@+id/imageView_43"
+            style="@style/image_card_style"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/download_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="15dp"
+        android:minWidth="300dp"
+        android:visibility="visible"
+        tools:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/download_progress_text"
+        />
+        
+    <TextView
+        android:id="@+id/download_progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:text="Download Progress Here"
+        android:textSize="25dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
