@@ -23,6 +23,7 @@ public class MusicService extends Service {
     public void onCreate() {
         super.onCreate();
         player = MediaPlayer.create(this,R.raw.music);
+//        AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.music);
     }
     @Override
     public int onStartCommand(Intent intent,int flags,int startId){
