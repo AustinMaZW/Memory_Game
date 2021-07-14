@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Memory Game</string>
+
     <string name="start">Start</string>
     <string name="credits">Credits</string>
     <string name="description">Description</string>
@@ -25,4 +26,8 @@
     <string name="credits_body_music">The Isolator by @nop © copyright 2021 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license.
         \nMore Country by Caffeine_Creek_Band from Pixabay
     </string>
+
+    <string name="select_6">Select 6 images to start playing</string>
+    <string name="click_fetch">Click \'FETCH\' to download images</string>
+
 </resources>
