@@ -14,27 +14,24 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import java.util.stream.IntStream;
 
 import static com.example.memorygame.GameViewAdaptor.DERP;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements FlipRunnable.ICurrImageNum{
     private GridView mGv;
     private GameViewAdaptor adaptor;
     private List<Icon> icons = null;
     private List<Icon> shows = null;
-
-    public GameViewAdaptor gameViewAdaptor() {
-        return this.adaptor;
-    }
-
-    public List<Icon> getAnswer() {
-        return this.shows;
-    }
-
+    private List<Boolean> isFlip;
+    private List<Boolean> isRight;
+    private Map<Integer,Icon> answer;
+    private int currImageNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,26 +50,19 @@ public class GameActivity extends AppCompatActivity {
         this.mGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                GridView gridView = findViewById(R.id.gridview);
-
-                SharedPreferences shared = getSharedPreferences("status", MODE_PRIVATE);
-                SharedPreferences.Editor editor = shared.edit();
-                int cnt = shared.getInt("currnum", 0);
-
-                if (!shared.getBoolean(Integer.toString(position), false) && cnt <= 1) {
-                    ImageView itemView = gridView.getAdapter().getView(position, view, parent).findViewById(R.id.iv_grid);
-                    Glide.with(GameActivity.this).load(getAnswer().get(position).getAddress()).into(itemView);
-                    editor.putBoolean(Integer.toString(position), true);
-                    editor.putInt("currnum", cnt + 1);
-                    editor.commit();
+                if (!isFlip.get(position) && currImageNum <= 1) {
+                    ImageView itemView = mGv.getChildAt(position).findViewById(R.id.iv_grid);
+                    Glide.with(GameActivity.this).load(answer.get(position).getAddress()).into(itemView);
+                    isFlip.set(position,true);
+                    currImageNum+=1;
                 }
-                if (shared.getInt("currnum", 0) == 2) {
-                    revertImg_(gridView, shared, editor);
+                if (currImageNum == 2) {
+                    revertImg(mGv, shared, editor);
                 }
             }
         });
     }
+
     private Handler hd;
     private void revertImg_(GridView gridView, SharedPreferences shared, SharedPreferences.Editor editor) {
         hd = new Handler();
@@ -95,7 +85,12 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         };
-        hd.postDelayed(runnable,500);
+        hd.postDelayed(runnable,1000);
+    }
+    private void revertImg(GridView gridView, SharedPreferences shared, SharedPreferences.Editor editor){
+        hd = new Handler();
+        Thread revert = new Thread(new FlipRunnable(this.isFlip,this.isRight,this.answer,this.mGv,this));
+        hd.postDelayed(revert,500);
     }
     private void Initial() {
         this.icons = new ArrayList<>();
@@ -110,11 +105,26 @@ public class GameActivity extends AppCompatActivity {
         Arrays.stream(seq).forEach(x -> showIcon.add(this.icons.get(x % 6)));
 
         this.shows = showIcon;
+        this.answer = new HashMap<>();
+        IntStream.range(0,this.shows.size()).forEach(x->this.answer.put(x,this.shows.get(x)));
+
         SharedPreferences shared = getSharedPreferences("status", MODE_PRIVATE);
+        SharedPreferences shared_r = getSharedPreferences("result", MODE_PRIVATE);
         SharedPreferences.Editor editor = shared.edit();
+        SharedPreferences.Editor editor_r = shared.edit();
         IntStream.range(0, 12).forEach(x -> editor.putBoolean(Integer.toString(x), false));
+        IntStream.range(0, 12).forEach(x -> editor_r.putBoolean(Integer.toString(x), false));
+        this.isFlip = new ArrayList<>();
+        this.isRight = new ArrayList<>();
+        for(int i = 0 ; i < this.shows.size();i++){
+            this.isFlip.add(false);
+            this.isRight.add(false);
+        }
+        this.currImageNum = 0;
+        System.out.println(this.shows.size());
         editor.putInt("currnum", 0);
         editor.commit();
+        editor_r.commit();
 
 
     }
@@ -140,4 +150,13 @@ public class GameActivity extends AppCompatActivity {
         return result;
     }
 
+    @Override
+    public int getCurrImageNum() {
+        return this.currImageNum;
+    }
+
+    @Override
+    public void setCurrImageNum(int num) {
+        this.currImageNum = num;
+    }
 }
