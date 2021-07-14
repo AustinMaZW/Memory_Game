@@ -7,25 +7,22 @@
     <string name="game_title">Memory Game</string>
     <string name="the_memory_game">The Memory Game</string>
     <string name="description_overview">Testing of your memory using pictures you have selected.</string>
-    <string name="how_to_play">How To Play:</string>
-    <string name="description_body">
-        1.Search for a category of pictures e.g. \'nature\' or \'music\' or enter url to search. \n
-        2.Select 6 pictures and your game will load. \n
-        3.Turn over any two cards. \n
-        4.If the cards match, you get a point. If they don't, they will turn back over. \n
-        5.The game ends when all cards have been matched.
+    <string name="how_to_play">How To Play</string>
+    <string name="description_body">1.Search for a category of pictures e.g. \'nature\' or \'music\' or enter url to search.
+        \n\n2.Select 6 pictures and your game will load.
+        \n\n3.Turn over any two cards.
+        \n\n4.If the cards match, you get a point. If they don\'t, they will turn back over.
+        \n\n5.The game ends when all cards have been matched.
     </string>
-    <string name="credits_body_group">
-        Team 10: \n
-        Chua Ya Zhen \n
-        Lim Yee Jean \n
-        Ma Zi Wang (Austin) \n
-        Ngu Myat Che Zaw \n
-        Tang Chor Kian \n
-        Yue Peng Cheng
+    <string name="credits_body_group">Team 10:
+        \nChua Ya Zhen
+        \nLim Yee Jean
+        \nMa Zi Wang (Austin)
+        \nNgu Myat Che Zaw
+        \nTang Chor Kian
+        \nYue Peng Cheng
     </string>
-    <string name="credits_body_music">
-        The Isolator by @nop (c) copyright 2021 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license. \n
-        More Country by Caffeine_Creek_Band from Pixabay
+    <string name="credits_body_music">The Isolator by @nop © copyright 2021 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license.
+        \nMore Country by Caffeine_Creek_Band from Pixabay
     </string>
 </resources>
