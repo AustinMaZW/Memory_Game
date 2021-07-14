@@ -42,7 +42,7 @@ public class PlayActivity extends AppCompatActivity {
     private int totalClicks = 0;
     private Handler handler;
     private boolean startCount = true;
-    private  boolean isFalse = false;
+    private boolean isFalse = false;
     private ProgressBar pgbar;
     private TextView progressInfo;
     private Intent intent;
@@ -66,6 +66,8 @@ public class PlayActivity extends AppCompatActivity {
         progressInfo = findViewById(R.id.progressInfo);
         intent = new Intent(this,MainActivity.class);
 
+
+
         // get images from drawable and save inside app-specific external folder
         // for testing purpose only. will delete after combining with activity1
         saveImages();
@@ -73,10 +75,12 @@ public class PlayActivity extends AppCompatActivity {
         // load images on screen
         showImages();
     }
-    private void setStartButton(Button start){
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        Intent _intent = new Intent(this,MusicService.class);
+        startService(_intent);
     }
-
     void saveImages(){
         for(int i = 0; i < 6; i++){
             File file = new File(getExternalFilesDir(null), filepath + "/" + filename + i);
