@@ -265,7 +265,7 @@ public class PlayActivity extends AppCompatActivity {
         timerView.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                if(SystemClock.elapsedRealtime() - timerView.getBase() >= 0){
+                if(SystemClock.elapsedRealtime() - timerView.getBase() > 0){
                     timerView.stop();
                     isFalse=true;
                     movesView.setText("You Lose!");
