@@ -1,5 +1,6 @@
 package com.example.memorygame;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +16,7 @@ import android.widget.GridLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -49,6 +51,9 @@ public class PlayActivity extends AppCompatActivity {
     private ProgressBar pgbar;
     private TextView progressInfo;
     private Intent intent;
+    private AlertDialog.Builder dlg;
+    private AlertDialog.Builder failDlg;
+
 
 
 //    private long secondElapsed;
@@ -63,7 +68,7 @@ public class PlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-
+        setDialog();
         timerView = findViewById(R.id.timerView);
         movesView = findViewById(R.id.movesView);
         pgbar = findViewById(R.id.pgbar);
@@ -211,7 +216,8 @@ public class PlayActivity extends AppCompatActivity {
                 movesView.setText("Congrats!");
                 timerView.stop();
                 bgm.stop();
-                startActivity(intent);
+//                startActivity(intent);
+                dlg.show();
                 //can add timer stop
             }
             else{
@@ -271,9 +277,40 @@ public class PlayActivity extends AppCompatActivity {
                     isFalse=true;
                     movesView.setText("You Lose!");
                     matchesCounter =6;
+                    failDlg.show();
                 }
             }
         });
+    }
+    private void setDialog(){
+        this.dlg = new AlertDialog.Builder(this)
+                .setTitle("Congratulation")
+                .setMessage("You win!\n Do you want to play again")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(intent);
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        recreate();
+                    }
+                }).setIcon(R.drawable.ic_launcher_foreground);
+        this.failDlg = new AlertDialog.Builder(this)
+                .setTitle("Congratulation")
+                .setMessage("You win!\n Do you want to play again")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(intent);
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        recreate();;
+                    }
+                }).setIcon(R.drawable.ic_launcher_foreground);
     }
 
 
