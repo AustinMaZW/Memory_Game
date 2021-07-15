@@ -210,6 +210,7 @@ public class PlayActivity extends AppCompatActivity {
             if(matchesCounter == 6){
                 movesView.setText("Congrats!");
                 timerView.stop();
+                bgm.stop();
                 startActivity(intent);
                 //can add timer stop
             }
@@ -274,4 +275,6 @@ public class PlayActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
