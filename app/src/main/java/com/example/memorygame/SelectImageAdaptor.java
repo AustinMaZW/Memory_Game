@@ -46,7 +46,7 @@ public class SelectImageAdaptor extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         if (imgCollection[position] == null)
-            imageView.setImageResource(R.drawable.card_back);
+            imageView.setImageResource(R.drawable.pinterest_profile_image);
         else
             imageView.setImageBitmap(imgCollection[position]);  //if there is a downloaded bitmap
 
