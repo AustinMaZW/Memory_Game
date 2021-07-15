@@ -1,13 +1,18 @@
 package com.example.memorygame;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.GridLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +29,7 @@ public class PlayActivity extends AppCompatActivity {
 
     String filepath = "game_cards";
     String filename = "image";
-    TextView timerView;
+    Chronometer timerView;
     TextView movesView;
     int numberOfButtons;
     GameCard[] buttons;
@@ -38,6 +43,13 @@ public class PlayActivity extends AppCompatActivity {
     private int totalClicks = 0;
     private Handler handler;
     MediaPlayer bgm;
+
+    private boolean startCount = true;
+    private boolean isFalse = false;
+    private ProgressBar pgbar;
+    private TextView progressInfo;
+    private Intent intent;
+
 
 //    private long secondElapsed;
 //
@@ -54,6 +66,9 @@ public class PlayActivity extends AppCompatActivity {
 
         timerView = findViewById(R.id.timerView);
         movesView = findViewById(R.id.movesView);
+        pgbar = findViewById(R.id.pgbar);
+        progressInfo = findViewById(R.id.progressInfo);
+        intent = new Intent(this,MainActivity.class);
         handler = new Handler();
         bgm = MediaPlayer.create(getApplicationContext(),R.raw.bgm);
         bgm.start();
@@ -109,8 +124,10 @@ public class PlayActivity extends AppCompatActivity {
 
     void loadImages(){
         //gameCards = new ArrayList<Bitmap>();
+        Intent _intent = getIntent();
+        String[] _imgs = _intent.getStringArrayExtra("imgs");
         for(int i = 0; i < 6; i++){
-            File file = new File(getExternalFilesDir(null), filepath + "/" + filename + i);
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), _imgs[i]);
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
@@ -144,7 +161,16 @@ public class PlayActivity extends AppCompatActivity {
                 tempButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(isFalse)
+                            return;
                         flip(view);
+                        pgbar.setProgress(matchesCounter);
+                        progressInfo.setText(String.format("%s / %s",matchesCounter,6));
+
+                        if(startCount){
+                            setTimerView(timerView);
+                            startCount = false;
+                        }
                     }
                 });
 
@@ -183,6 +209,9 @@ public class PlayActivity extends AppCompatActivity {
             //updating match progress
             if(matchesCounter == 6){
                 movesView.setText("Congrats!");
+                timerView.stop();
+                startActivity(intent);
+                //can add timer stop
             }
             else{
                 movesView.setText("Moves: " + totalClicks);
@@ -227,4 +256,20 @@ public class PlayActivity extends AppCompatActivity {
 //        int drawableID = this.getResources().getIdentifier("bitmap0", "drawable", getPackageName());
 //        iv.setImageResource(drawableID);
     }*/
+    private void setTimerView(Chronometer timerView){
+        timerView.setBase(SystemClock.elapsedRealtime());
+        timerView.setFormat("%s");
+        timerView.start();
+        timerView.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                if(SystemClock.elapsedRealtime() - timerView.getBase() >= 30000){
+                    timerView.stop();
+                    isFalse=true;
+                    movesView.setText("You Lose!");
+                    matchesCounter =6;
+                }
+            }
+        });
+    }
 }
