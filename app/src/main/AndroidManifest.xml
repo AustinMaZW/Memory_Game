@@ -13,8 +13,8 @@
         android:theme="@style/Theme.MemoryGame">
         <activity android:name=".viewDescriptionActivity"></activity>
         <activity android:name=".viewCreditsActivity" />
-        <activity android:name=".MainPage" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" />
+        <activity android:name=".MainPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

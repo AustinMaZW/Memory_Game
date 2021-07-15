@@ -16,14 +16,15 @@
         \n\n5.The game ends when all cards have been matched.
     </string>
     <string name="credits_body_group">Team 10:
-        \nChua Ya Zhen
-        \nLim Yee Jean
-        \nMa Zi Wang (Austin)
-        \nNgu Myat Che Zaw
-        \nTang Chor Kian
-        \nYue Peng Cheng
+        \n\nChua Ya Zhen
+        \n\nLim Yee Jean
+        \n\nMa Zi Wang (Austin)
+        \n\nNgu Myat Che Zaw
+        \n\nTang Chor Kian
+        \n\nYue Peng Cheng
     </string>
+    <string name="music">Music By</string>
     <string name="credits_body_music">The Isolator by @nop © copyright 2021 Licensed under a Creative Commons Attribution Noncommercial (3.0) license.
-        \nMore Country by Caffeine_Creek_Band from Pixabay
+        \n\nMore Country by Caffeine_Creek_Band from Pixabay
     </string>
 </resources>
