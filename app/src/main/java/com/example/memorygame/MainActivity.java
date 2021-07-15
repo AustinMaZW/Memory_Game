@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 if(selectedImgFileNames.contains(imageName)){
                     itemView.clearColorFilter();
                     selectedImgFileNames.remove(imageName);
-                }else{
+                }else if(selectedImgFileNames.size()<6){
                     itemView.setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
                     selectedImgFileNames.add(imageName);
                 }
@@ -197,13 +197,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startGame(){
-//        Intent intent = new Intent(this, GameActivity.class);
-
         String[] imgs = new String[selectedImgFileNames.size()];     //convert to string[] so i can pass to activity
         selectedImgFileNames.toArray(imgs);
         System.out.println("Array "+ Arrays.toString(imgs));
-        clearSettings();            //clear settings after extracting the imgs to array
-        viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
+        //clearSettings();            //no need to clear setting i guess, since activity is recreated after we come back from activity 2
+        //viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
         Intent _intent = new Intent(this,PlayActivity.class);
         _intent.putExtra("imgs", imgs);
         startActivity(_intent);
