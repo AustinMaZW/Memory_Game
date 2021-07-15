@@ -114,8 +114,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-//                int scale = (int) getResources().getDisplayMetrics().density * 150;
-//                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
+                int scale = (int) getResources().getDisplayMetrics().density * 150;
+                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
                 images[i] = bitmap;
             } catch(IOException e){
                 e.printStackTrace();
@@ -190,31 +190,31 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
                 prevCard = null;
 
-            matchesCounter++;
-            totalClicks++;
-            //updating match progress
-            if(matchesCounter == 6){
-                movesView.setText("Congrats!");
-                timeLeft = (SystemClock.elapsedRealtime() - timerView.getBase())*-1;
-                System.out.println("Time left:" + timeLeft);
-                timerView.stop();
-                calculateScore();
-                bgm.stop();
-//                startActivity(intent);
-                enterHighScore();
-                //dlg.show();
-                //can add timer stop
-            }
-            else{
-                movesView.setText("Moves: " + totalClicks);
-            }
+                matchesCounter++;
+                totalClicks++;
+                //updating match progress
+                if(matchesCounter == 6){
+                    movesView.setText("Congrats!");
+                    timeLeft = (SystemClock.elapsedRealtime() - timerView.getBase())*-1;
+                    System.out.println("Time left:" + timeLeft);
+                    timerView.stop();
+                    calculateScore();
+                    bgm.stop();
+    //                startActivity(intent);
+                    enterHighScore();
+                    //dlg.show();
+                    //can add timer stop
+                }
+                else{
+                    movesView.setText("Moves: " + totalClicks);
+                }
 
-        }
-        else {
+            }
+            else {
                 flip(currentCard, currentView);
-            isBusy = true;
-            totalClicks++;
-            movesView.setText("Moves: " + totalClicks);
+                isBusy = true;
+                totalClicks++;
+                movesView.setText("Moves: " + totalClicks);
 
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -228,14 +228,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
-    private void calculateScore() {
-        score = (int)timeLeft/10 + (int)1000/totalClicks;
-        System.out.println("Score:" + score);
-    }
-
-    /*private void showImage() {
-        String uri = "drawable/icon";
 
     public void flip(GameCard card, ImageView view) {
         if(card.isMatched()) {
@@ -251,6 +243,11 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void calculateScore() {
+        score = (int)timeLeft/10 + (int)1000/totalClicks;
+        System.out.println("Score:" + score);
+    }
+
     private void setTimerView(Chronometer timerView){
         timerView.setBase(SystemClock.elapsedRealtime() + 30000);
         timerView.setCountDown(true);
@@ -263,7 +260,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 if(SystemClock.elapsedRealtime() - timerView.getBase() > 0){
                     timerView.stop();
                     isFalse=true;
-                    movesView.setText(R.string.lose);
+                    movesView.setText(R.string.lost);
                     bgm.stop();
                     matchesCounter =6;
                     failDlg.show();
@@ -305,7 +302,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         editor.commit();
     }
 
-
     private void setDialog(){
         this.dlg = new AlertDialog.Builder(this)
                 .setTitle("Congratulations!")
@@ -336,6 +332,4 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }).setIcon(R.drawable.ic_launcher_foreground);
     }
-
-
 }
