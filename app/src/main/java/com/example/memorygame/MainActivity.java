@@ -204,8 +204,9 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Array "+ Arrays.toString(imgs));
         clearSettings();            //clear settings after extracting the imgs to array
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
-//        intent.putExtra("imgs", imgs);
-//        startActivity(intent);
+        Intent _intent = new Intent(this,PlayActivity.class);
+        _intent.putExtra("imgs", imgs);
+        startActivity(_intent);
     }
 
     public void clearSettings() {
