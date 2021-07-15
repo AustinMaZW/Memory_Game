@@ -2,6 +2,9 @@
     <string name="app_name">Memory Game</string>
     <string name="select_6">Select 6 images to start playing</string>
     <string name="click_fetch">Click \'FETCH\' to download images</string>
+    <string name="download_starting">Download starting...</string>
+    <string name="invalid_url">"Invalid URL, please enter again"</string>
+    <string name="cannot_access_url">Cannot access URL, please try again</string>
     <string name="start">Start</string>
     <string name="credits">Credits</string>
     <string name="description">Description</string>
