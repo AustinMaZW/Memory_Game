@@ -12,36 +12,41 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Chronometer;
-import android.widget.GridLayout;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 
 public class PlayActivity extends AppCompatActivity {
 
-    String filepath = "game_cards";
-    String filename = "image";
+    static final int DOUBLE = 2;
+    String[] filenames;
+    //TextView timerView;
+    //TextView movesView;
+    GridView grid;
     Chronometer timerView;
     TextView movesView;
-    int numberOfButtons;
-    GameCard[] buttons;
-    Bitmap[] buttonGraphics;
-    int[] buttonGraphicLocations;
-    private GameCard button;
-    private GameCard selectedButton1;
-    private GameCard selectedButton2;
+    GameAdapter adapter;
+    int numberOfCard;
+    // GameCard objects to bind to view using Adapter
+    GameCard[] cards;
+    // selected images to play
+    Bitmap[] images;
+    // store which image to be shown at position i (i = index of array)
+    int[] imagesLayoutPlan;
+
+    private GameCard prevCard;
+
     private boolean isBusy;
     private int matchesCounter = 0;
     private int totalClicks = 0;
@@ -57,20 +62,13 @@ public class PlayActivity extends AppCompatActivity {
     private TextView progressInfo;
     private Intent intent;
 
-
-//    private long secondElapsed;
-//
-//    private Runnable runnable = null;
-//    private Handler handler;
-//    private boolean mStarted;
-
-    List<Bitmap> gameCards;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
+        Intent mainActivity = getIntent();
+        filenames = mainActivity.getStringArrayExtra("imgs");
         timerView = findViewById(R.id.timerView);
         movesView = findViewById(R.id.movesView);
         pgbar = findViewById(R.id.pgbar);
@@ -78,12 +76,21 @@ public class PlayActivity extends AppCompatActivity {
         intent = new Intent(this,MainActivity.class);
         handler = new Handler();
 
-        // get images from drawable and save inside app-specific external folder
-        // for testing purpose only. will delete after combining with activity1
-        saveImages();
+        numberOfCard = filenames.length * DOUBLE;
 
-        // load images on screen
-        showImages();
+        cards = new GameCard[numberOfCard];
+        adapter = new GameAdapter(this, cards);
+
+        grid = findViewById(R.id.gridView);
+        grid.setAdapter(adapter);
+
+        images = new Bitmap[filenames.length];
+        loadImages();
+
+        imagesLayoutPlan = new int[numberOfCard];
+        shuffleCards();
+
+        setImageOnView();
 
         bgm = MediaPlayer.create(getApplicationContext(),R.raw.bgm);
         bgm.start();
@@ -107,130 +114,110 @@ public class PlayActivity extends AppCompatActivity {
         lose = soundPool.load(this, R.raw.lose, 1);
     }
 
-    void saveImages(){
-        for(int i = 0; i < 6; i++){
-            File file = new File(getExternalFilesDir(null), filepath + "/" + filename + i);
-            if(file.exists())
-                file.delete();
-            File parent = file.getParentFile();
-            if (!parent.exists() && !parent.mkdirs()) {
-                throw new IllegalStateException(
-                        "Couldn't create dir: " + parent);
-            }
-
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(file, false);
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                int drawableID = this.getResources().getIdentifier(filename + i, "drawable", getPackageName());
-                Bitmap bmp = BitmapFactory.decodeResource(getResources(), drawableID);
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                byte[] bytes = byteArrayOutputStream.toByteArray();
-                fileOutputStream.write(bytes);
-                fileOutputStream.close();
-            } catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-    void showImages() {
-        GridLayout grid = findViewById(R.id.gridLayout);
-        int numberOfC = grid.getColumnCount();
-        int numberOfR = grid.getRowCount();
-        numberOfButtons = numberOfC * numberOfR;
-
-        buttons = new GameCard[numberOfButtons];
-        buttonGraphics = new Bitmap[numberOfButtons / 2];
-        loadImages();
-
-        buttonGraphicLocations = new int[numberOfButtons];
-        setImageOnView(numberOfR, numberOfC);
-    }
-
     void loadImages(){
-        //gameCards = new ArrayList<Bitmap>();
-        Intent _intent = getIntent();
-        String[] _imgs = _intent.getStringArrayExtra("imgs");
-        for(int i = 0; i < 6; i++){
-            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), _imgs[i]);
+        for(int i = 0; i < filenames.length; i++){
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), filenames[i]);
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-                int scale = (int) getResources().getDisplayMetrics().density *150;
-                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
-                buttonGraphics[i] = bitmap;
-                //gameCards.add(bitmap);
+                int scale = (int) getResources().getDisplayMetrics().density *150; // J
+                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true); // J
+                images[i] = bitmap;
             } catch(IOException e){
                 e.printStackTrace();
             }
         }
     }
-    private void shuffle(){
+
+    private void shuffleCards(){
         Random rand = new Random();
-        for(int i = 0; i < numberOfButtons; i++){
-            buttonGraphicLocations[i] = i % (numberOfButtons / 2);
+        for(int i = 0; i < numberOfCard; i++){
+            imagesLayoutPlan[i] = i % (numberOfCard / 2);
         }
-        for(int i = 0; i < numberOfButtons; i++){
-            int temp = buttonGraphicLocations[i];
-            int swap = rand.nextInt(12);
-            buttonGraphicLocations[i] = buttonGraphicLocations[swap];
-            buttonGraphicLocations[swap] = temp;
+        for(int i = 0; i < numberOfCard; i++){
+            int rndPosition = rand.nextInt(12);
+            // swap
+            int value = imagesLayoutPlan[i];
+            imagesLayoutPlan[i] = imagesLayoutPlan[rndPosition];
+            imagesLayoutPlan[rndPosition] = value;
         }
     }
-    private void setImageOnView(int numberOfR, int numberOfC) {
-        shuffle();
-        GridLayout grid = findViewById(R.id.gridLayout);
-        for(int row = 0; row < numberOfR; row++){
-            for(int column = 0; column < numberOfC; column++){
-                GameCard tempButton = new GameCard(this, row, column, buttonGraphics[buttonGraphicLocations[row * numberOfC + column]]);
-                tempButton.setId(View.generateViewId());
-                Log.i("msg", String.valueOf(tempButton.getId()));
-                tempButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(isFalse)
-                            return;
-                        flip(view);
-                        pgbar.setProgress(matchesCounter);
-                        progressInfo.setText(String.format("%s / %s",matchesCounter,6));
 
-                        if(startCount){
-                            setTimerView(timerView);
-                            startCount = false;
-                        }
-                    }
-                });
+    private void setImageOnView() {
+        //GridLayout grid = findViewById(R.id.gridLayout);
+        for(int i = 0; i < numberOfCard; i++){
+            GameCard gameCard = new GameCard(this, i, images[imagesLayoutPlan[i]]);
+            gameCard.setId(View.generateViewId());
 
-                grid.addView(tempButton);
+//            gameCard.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if(isFalse)
+//                        return;
+//                    flip(view);
+//                    pgbar.setProgress(matchesCounter);
+//                    progressInfo.setText(String.format("%s / %s",matchesCounter,6));
+//
+//                    if(startCount){
+//                        setTimerView(timerView);
+//                        startCount = false;
+//                    }
+//                }
+//            });
 
-                //saving the reference to button
-                buttons[row*numberOfC + column] = tempButton;
+            //grid.addView(tempButton);
+
+            //saving the reference to button
+            cards[i] = gameCard;
+        }
+
+        adapter.setmGameCards(cards);
+
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(isFalse)
+                    return;
+
+                checkCardIsMatched(view, position);
+
+                pgbar.setProgress(matchesCounter);
+                progressInfo.setText(String.format("%s / %s",matchesCounter,6));
+
+                if(startCount){
+                    setTimerView(timerView);
+                    startCount = false;
+                }
             }
-        }
+        });
     }
 
-    private void flip(View view) {
-        button = (GameCard) view;
-        if(isBusy){
+    private void checkCardIsMatched(View view, int position) {
+        ImageView currentView = (ImageView) view;
+        GameCard currentCard = cards[position];
+        if(isBusy || currentCard.isMatched()) {
             return;
         }
-        if(selectedButton1 == null){
-            selectedButton1 = button;
-            selectedButton1.flip();
+        if(prevCard == null){
+            prevCard = cards[position];
+            flip(prevCard, currentView);
         }
-        if(selectedButton1.getId() == button.getId()){
-            return;
-        }
-        if(selectedButton1.getFrontImageId() == button.getFrontImageId()){
-            button.flip();
 
-            button.setMatched(true);
+        ImageView prevView = grid.findViewById(prevCard.getPositionOnScreen());
+        if(prevCard.getId() == currentCard.getId()){
+            return;
+        }
+        if(prevCard.getFrontImage() == currentCard.getFrontImage()){
+            flip(currentCard, currentView);
+
+            prevCard.setMatched(true);
+            currentCard.setMatched(true);
+//            currentView.setEnabled(false);
+//            prevView.setEnabled(false);
+
             soundPool.play(match,1,1,0,0,1);
 
-            selectedButton1.setEnabled(false);
-            button.setEnabled(false);
-
-            selectedButton1 = null;
+            prevCard = null;
 
             matchesCounter++;
             totalClicks++;
@@ -240,7 +227,7 @@ public class PlayActivity extends AppCompatActivity {
                 timerView.stop();
                 bgm.stop();
                 soundPool.play(win,1,1,0,0,1);
-                startActivity(intent);
+                //startActivity(intent);
                 //can add timer stop
             }
             else{
@@ -249,8 +236,7 @@ public class PlayActivity extends AppCompatActivity {
             return;
         }
         else {
-            selectedButton2 = button;
-            selectedButton2.flip();
+            flip(currentCard, currentView);
             soundPool.play(miss,1,1,0,0,1);
             isBusy = true;
             totalClicks++;
@@ -259,34 +245,29 @@ public class PlayActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    selectedButton1.flip();
-                    selectedButton2.flip();
-                    selectedButton1 = null;
-                    selectedButton2 = null;
+                    flip(prevCard, prevView);
+                    flip(currentCard, currentView);
+                    prevCard = null;
                     isBusy = false;
-//                    toast.cancel();
                 }
             }, 500);
         }
     }
 
-    /*private void showImage() {
-        String uri = "drawable/icon";
+    public void flip(GameCard card, ImageView view){
+        if(card.isMatched()){
+            return;
+        }
+        if(card.isFlipped()){
+            view.setImageBitmap(card.getBackImage());
+            card.setFlipped(false);
+        }
+        else {
+            view.setImageBitmap(card.getFrontImage());
+            card.setFlipped(true);
+        }
+    }
 
-        // int imageResource = R.drawable.icon;
-        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-
-//        ImageView imageView = (ImageView) findViewById(R.id.myImageView);
-//        Drawable image = getResources().getDrawable(imageResource);
-//        imageView.setImageDrawable(image);
-
-//        int imageResource = R.drawable.icon;
-//        Drawable image = getResources().getDrawable(imageResource);
-
-//        ImageView iv = new ImageView(this);
-//        int drawableID = this.getResources().getIdentifier("bitmap0", "drawable", getPackageName());
-//        iv.setImageResource(drawableID);
-    }*/
     private void setTimerView(Chronometer timerView){
         timerView.setBase(SystemClock.elapsedRealtime() + 30000);
         timerView.setCountDown(true);
@@ -307,6 +288,4 @@ public class PlayActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }

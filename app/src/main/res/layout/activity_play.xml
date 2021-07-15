@@ -24,25 +24,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_gravity="center"
             android:orientation="vertical">
-            <!--             added 6 radio buttons just for show. replace with images(imageView or something) later-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
             <ProgressBar
                 android:id="@+id/pgbar"
                 style="@android:style/Widget.ProgressBar.Horizontal"
@@ -95,15 +76,22 @@
         app:layout_constraintTop_toBottomOf="@id/topLayout"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <GridLayout
-            android:id="@+id/gridLayout"
+<!--        <GridLayout-->
+<!--            android:id="@+id/gridLayout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:columnCount="3"-->
+<!--            android:rowCount="4"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+<!--        </GridLayout>-->
+        <GridView
+            android:id="@+id/gridView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:columnCount="3"
-            android:rowCount="4"
-            app:layout_constraintTop_toTopOf="parent">
-        </GridLayout>
+            android:numColumns="3"
+            app:layout_constraintTop_toTopOf="parent"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
