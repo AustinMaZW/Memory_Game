@@ -27,7 +27,9 @@ public class GameCard extends AppCompatImageButton {
 
 
         frontImage = bitmap;
-        backImage = BitmapFactory.decodeResource(getResources(), R.drawable.background);
+        backImage = BitmapFactory.decodeResource(getResources(), R.drawable.logo_transparent);
+        int scale = (int) getResources().getDisplayMetrics().density *150;
+        backImage = Bitmap.createScaledBitmap(backImage, scale, scale,true);
 
         //setting default question mark
         setImageBitmap(backImage);

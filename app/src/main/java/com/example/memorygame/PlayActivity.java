@@ -2,6 +2,7 @@ package com.example.memorygame;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class PlayActivity extends AppCompatActivity {
     private int matchesCounter = 0;
     private int totalClicks = 0;
     private Handler handler;
+    MediaPlayer bgm;
 
 //    private long secondElapsed;
 //
@@ -53,6 +55,9 @@ public class PlayActivity extends AppCompatActivity {
         timerView = findViewById(R.id.timerView);
         movesView = findViewById(R.id.movesView);
         handler = new Handler();
+        bgm = MediaPlayer.create(getApplicationContext(),R.raw.bgm);
+        bgm.start();
+        bgm.setLooping(true);
 
         // get images from drawable and save inside app-specific external folder
         // for testing purpose only. will delete after combining with activity1
