@@ -6,6 +6,7 @@
     <string name="download_starting">Download starting...</string>
     <string name="invalid_url">"Invalid URL, please enter again"</string>
     <string name="cannot_access_url">Cannot access URL, please try again</string>
+    <string name="cannot_retrieve_imgs">Cannot retrieve images, please try again</string>
     <string name="start">Start</string>
     <string name="credits">Credits</string>
     <string name="fetchBtn">Fetch</string>

@@ -13,7 +13,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:hint="Enter URL"
+        android:hint="Enter URL or search item"
         android:inputType="text"
         android:padding="10dp"
         app:layout_constraintHorizontal_bias="0.2"
