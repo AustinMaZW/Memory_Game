@@ -3,7 +3,11 @@ package com.example.memorygame;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -42,7 +46,10 @@ public class PlayActivity extends AppCompatActivity {
     private int matchesCounter = 0;
     private int totalClicks = 0;
     private Handler handler;
+
     MediaPlayer bgm;
+    private SoundPool soundPool;
+    private int match, miss, win, lose;
 
     private boolean startCount = true;
     private boolean isFalse = false;
@@ -70,9 +77,6 @@ public class PlayActivity extends AppCompatActivity {
         progressInfo = findViewById(R.id.progressInfo);
         intent = new Intent(this,MainActivity.class);
         handler = new Handler();
-        bgm = MediaPlayer.create(getApplicationContext(),R.raw.bgm);
-        bgm.start();
-        bgm.setLooping(true);
 
         // get images from drawable and save inside app-specific external folder
         // for testing purpose only. will delete after combining with activity1
@@ -80,6 +84,27 @@ public class PlayActivity extends AppCompatActivity {
 
         // load images on screen
         showImages();
+
+        bgm = MediaPlayer.create(getApplicationContext(),R.raw.bgm);
+        bgm.start();
+        bgm.setLooping(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+            soundPool = new SoundPool.Builder()
+                    .setMaxStreams(4)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        } else {
+            soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+        }
+        match = soundPool.load(this, R.raw.match, 1);
+        miss = soundPool.load(this, R.raw.miss, 1);
+        win = soundPool.load(this, R.raw.win, 1);
+        lose = soundPool.load(this, R.raw.lose, 1);
     }
 
     void saveImages(){
@@ -131,6 +156,8 @@ public class PlayActivity extends AppCompatActivity {
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
+                int scale = (int) getResources().getDisplayMetrics().density *150;
+                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
                 buttonGraphics[i] = bitmap;
                 //gameCards.add(bitmap);
             } catch(IOException e){
@@ -198,6 +225,7 @@ public class PlayActivity extends AppCompatActivity {
             button.flip();
 
             button.setMatched(true);
+            soundPool.play(match,1,1,0,0,1);
 
             selectedButton1.setEnabled(false);
             button.setEnabled(false);
