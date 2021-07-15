@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
@@ -65,6 +66,7 @@ public class PlayActivity extends AppCompatActivity {
         handler = new Handler();
         progressInfo = findViewById(R.id.progressInfo);
         intent = new Intent(this,MainActivity.class);
+//        this.filepath = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
 
 
@@ -109,26 +111,29 @@ public class PlayActivity extends AppCompatActivity {
 
     void showImages() {
         GridLayout grid = findViewById(R.id.gridLayout);
-        int numberOfC = grid.getColumnCount();
-        int numberOfR = grid.getRowCount();
-        numberOfButtons = numberOfC * numberOfR;
+        int numberOfC = grid.getColumnCount();  //3
+        int numberOfR = grid.getRowCount(); //4
+        numberOfButtons = numberOfC * numberOfR;    //12
 
-        buttons = new GameCard[numberOfButtons];
-        buttonGraphics = new Bitmap[numberOfButtons / 2];
+        buttons = new GameCard[numberOfButtons];    //Gamecard[12]
+        buttonGraphics = new Bitmap[numberOfButtons / 2];   //gamecard[6]
         loadImages();
 
-        buttonGraphicLocations = new int[numberOfButtons];
-        setImageOnView(numberOfR, numberOfC);
+        buttonGraphicLocations = new int[numberOfButtons];  //position, 12
+        setImageOnView(numberOfR, numberOfC);   //3,4
     }
 
     void loadImages(){
         //gameCards = new ArrayList<Bitmap>();
+        Intent _intent = getIntent();
+        String[] _imgs = _intent.getStringArrayExtra("imgs");
         for(int i = 0; i < 6; i++){
-            File file = new File(getExternalFilesDir(null), filepath + "/" + filename + i);
+//            File file = new File(getExternalFilesDir(null), filepath + "/" + filename + i);
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), _imgs[i]);
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-                buttonGraphics[i] = bitmap;
+                buttonGraphics[i] = bitmap; //load 6 image in to array
                 //gameCards.add(bitmap);
             } catch(IOException e){
                 e.printStackTrace();
@@ -148,11 +153,11 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
     private void setImageOnView(int numberOfR, int numberOfC) {
-        shuffle();
+        shuffle();  //random
         GridLayout grid = findViewById(R.id.gridLayout);
-        for(int row = 0; row < numberOfR; row++){
-            for(int column = 0; column < numberOfC; column++){
-                GameCard tempButton = new GameCard(this, row, column, buttonGraphics[buttonGraphicLocations[row * numberOfC + column]]);
+        for(int row = 0; row < numberOfR; row++){   //repeat row
+            for(int column = 0; column < numberOfC; column++){  //repeat column
+                GameCard tempButton = new GameCard(this, row, column, buttonGraphics[buttonGraphicLocations[row * numberOfC + column]]);//add image
                 tempButton.setId(View.generateViewId());
                 Log.i("msg", String.valueOf(tempButton.getId()));
                 tempButton.setOnClickListener(new View.OnClickListener() {
