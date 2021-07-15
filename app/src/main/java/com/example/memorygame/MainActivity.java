@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -40,12 +41,12 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     //views
-    private AppCompatButton fetchButton;
+    private Button fetchButton;
     private EditText fetchUrl;
     private ProgressBar progressBar;
     private ViewFlipper viewFlipper;
     private TextView progressTextView;
-    private AppCompatButton startGameBtn;
+    private Button startGameBtn;
     private GridView gridView;
     private SelectImageAdaptor mImageAdaptor;
 
