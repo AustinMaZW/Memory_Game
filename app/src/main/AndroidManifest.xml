@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MemoryGame">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".Leaderboard"></activity>
         <activity android:name=".PlayActivity"></activity>
         <activity android:name=".viewDescriptionActivity" />
