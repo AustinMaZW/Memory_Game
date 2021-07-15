@@ -202,7 +202,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     bgm.stop();
     //                startActivity(intent);
                     enterHighScore();
-                    //dlg.show();
+//                    dlg.show();
                     //can add timer stop
                 }
                 else{
@@ -276,30 +276,42 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         dialog.setView(view);
         dialog.setCancelable(false);
         alertDialog = dialog.create();
-        final Button submitBtn = view.findViewById(R.id.submitBtn);
-        submitBtn.setOnClickListener(this);
+        final Button leaderboardBtn = view.findViewById(R.id.leaderboardBtn);
+        leaderboardBtn.setOnClickListener(this);
+
+        Button playAgainBtn = view.findViewById(R.id.playAgainBtn);
+        playAgainBtn.setOnClickListener(this);
         TextView scoreView = view.findViewById(R.id.player_score);
-        scoreView.setText(" " + score + " points");
-        name = view.findViewById(R.id.name);
+        scoreView.setText("You got " + score + " points!");
         alertDialog.show();
     }
 
     public void onClick(View view) {
-        if(view.getId() == R.id.submitBtn) {
-            saveScore(name.getText().toString(), score);
+        if(view.getId() == R.id.leaderboardBtn) {
+            saveScore(score);
             alertDialog.dismiss();
             Intent intent = new Intent(this, Leaderboard.class);
             startActivity(intent);
             finish();
         }
+        if(view.getId() == R.id.playAgainBtn) {
+            saveScore(score);
+            alertDialog.dismiss();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
-    void saveScore(String name, int score){
-        sharedPreferences = this.getSharedPreferences("leaderboard", Context.MODE_PRIVATE);
+    void saveScore(int score){
+        sharedPreferences = getSharedPreferences("leaderboard",0);
         editor = sharedPreferences.edit();
-        editor.putString("name", name);
-        editor.putInt("score", score);
-        editor.commit();
+        editor.putInt("lastScore", score);
+        editor.apply();
+
+        Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
+        startActivity(intent);
+        finish();
     }
 
     private void setDialog(){
