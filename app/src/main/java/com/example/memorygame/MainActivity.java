@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -40,12 +41,12 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     //views
-    private AppCompatButton fetchButton;
+    private Button fetchButton;
     private EditText fetchUrl;
     private ProgressBar progressBar;
     private ViewFlipper viewFlipper;
     private TextView progressTextView;
-    private AppCompatButton startGameBtn;
+    private Button startGameBtn;
     private GridView gridView;
     private SelectImageAdaptor mImageAdaptor;
 
@@ -85,8 +86,14 @@ public class MainActivity extends AppCompatActivity {
                     viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
                     startDownloadImage(url);
                 }else{
-                    progressTextView.setText(R.string.invalid_url);
-                    progressTextView.setTextColor(Color.RED);
+                    url = "https://stocksnap.io/search/" + url;
+                    clearSettings();    //reset any settings
+                    progressTextView.setText(R.string.download_starting);
+                    downloading=true;
+                    viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
+                    startDownloadImage(url);
+//                    progressTextView.setText(R.string.invalid_url);
+//                    progressTextView.setTextColor(Color.RED);
                 }
             }
         });
@@ -156,6 +163,13 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }else{
                         System.out.println("im interrupted");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressTextView.setText(R.string.cannot_retrieve_imgs);
+                                progressTextView.setTextColor(Color.RED);
+                            }
+                        });
                         return;
                     }
                 }
@@ -175,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                     itemView.clearColorFilter();
                     selectedImgFileNames.remove(imageName);
                 }else if(selectedImgFileNames.size()<6){
-                    itemView.setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+                    itemView.setColorFilter(Color.rgb(255,104,196), PorterDuff.Mode.OVERLAY);
                     selectedImgFileNames.add(imageName);
                 }
                 checkSelectedImgs();
@@ -200,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         String[] imgs = new String[selectedImgFileNames.size()];     //convert to string[] so i can pass to activity
         selectedImgFileNames.toArray(imgs);
         System.out.println("Array "+ Arrays.toString(imgs));
-        //clearSettings();            //no need to clear setting i guess, since activity is recreated after we come back from activity 2
+        //clearSettings();            //we can clear setting so when back button is clicked, they have to re-fetch
         //viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
         Intent _intent = new Intent(this,PlayActivity.class);
         _intent.putExtra("imgs", imgs);
