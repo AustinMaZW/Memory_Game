@@ -25,25 +25,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_gravity="center"
             android:orientation="vertical">
-            <!--             added 6 radio buttons just for show. replace with images(imageView or something) later-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
-            <!--            <androidx.appcompat.widget.AppCompatRadioButton-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"/>-->
             <ProgressBar
                 android:id="@+id/pgbar"
                 style="@android:style/Widget.ProgressBar.Horizontal"
@@ -58,8 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="10sp"/>
-
+                android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -84,7 +64,7 @@
                     android:id="@+id/movesView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/moves"
+                    android:text="@string/move0"
                     android:textSize="20sp"
                     android:layout_gravity="end"
                     android:layout_marginLeft="10dp"/>
@@ -100,18 +80,17 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:gravity="center"
-        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintHeight_percent="0.8"
         app:layout_constraintTop_toBottomOf="@id/topLayout"
         app:layout_constraintBottom_toBottomOf="parent">
-
-        <GridLayout
-            android:id="@+id/gridLayout"
+        <GridView
+            android:id="@+id/gridView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+
             android:layout_gravity="center"
-            android:columnCount="3"
-            android:rowCount="4"
-            ></GridLayout>
+            android:numColumns="3"
+            app:layout_constraintTop_toTopOf="parent"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
