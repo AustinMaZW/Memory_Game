@@ -257,13 +257,15 @@ public class PlayActivity extends AppCompatActivity {
 //        iv.setImageResource(drawableID);
     }*/
     private void setTimerView(Chronometer timerView){
-        timerView.setBase(SystemClock.elapsedRealtime());
+        timerView.setBase(SystemClock.elapsedRealtime() + 30000);
+        timerView.setCountDown(true);
         timerView.setFormat("%s");
         timerView.start();
+
         timerView.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                if(SystemClock.elapsedRealtime() - timerView.getBase() >= 30000){
+                if(SystemClock.elapsedRealtime() - timerView.getBase() > 0){
                     timerView.stop();
                     isFalse=true;
                     movesView.setText("You Lose!");
