@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     tools:context=".PlayActivity">
 
     <LinearLayout
         android:id="@+id/topLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/gridLayout"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toTopOf="@id/bottomLayer"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
         <LinearLayout
@@ -84,18 +87,23 @@
         </LinearLayout>
     </LinearLayout>
 
-    <GridLayout
-        android:id="@+id/gridLayout"
+    <LinearLayout
+        android:id="@+id/bottomLayer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
-        android:columnCount="3"
-        android:rowCount="4"
-        android:paddingLeft="16dp"
-        android:paddingTop="16dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="16dp"
-        app:layout_constraintTop_toTopOf="parent">
-    </GridLayout>
+        android:layout_height="0dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/topLayout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <GridLayout
+            android:id="@+id/gridLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:columnCount="3"
+            android:rowCount="4"
+            app:layout_constraintTop_toTopOf="parent">
+        </GridLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
