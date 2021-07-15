@@ -30,9 +30,8 @@ import java.util.Random;
 public class PlayActivity extends AppCompatActivity {
 
     static final int DOUBLE = 2;
+
     String[] filenames;
-    //TextView timerView;
-    //TextView movesView;
     GridView grid;
     Chronometer timerView;
     TextView movesView;
@@ -114,14 +113,14 @@ public class PlayActivity extends AppCompatActivity {
         lose = soundPool.load(this, R.raw.lose, 1);
     }
 
-    void loadImages(){
-        for(int i = 0; i < filenames.length; i++){
+    void loadImages() {
+        for(int i = 0; i < filenames.length; i++) {
             File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), filenames[i]);
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-                int scale = (int) getResources().getDisplayMetrics().density *150; // J
-                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true); // J
+                int scale = (int) getResources().getDisplayMetrics().density * 150;
+                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
                 images[i] = bitmap;
             } catch(IOException e){
                 e.printStackTrace();
@@ -129,12 +128,12 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
-    private void shuffleCards(){
+    private void shuffleCards() {
         Random rand = new Random();
-        for(int i = 0; i < numberOfCard; i++){
+        for(int i = 0; i < numberOfCard; i++) {
             imagesLayoutPlan[i] = i % (numberOfCard / 2);
         }
-        for(int i = 0; i < numberOfCard; i++){
+        for(int i = 0; i < numberOfCard; i++) {
             int rndPosition = rand.nextInt(12);
             // swap
             int value = imagesLayoutPlan[i];
@@ -144,28 +143,9 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void setImageOnView() {
-        //GridLayout grid = findViewById(R.id.gridLayout);
-        for(int i = 0; i < numberOfCard; i++){
+        for(int i = 0; i < numberOfCard; i++) {
             GameCard gameCard = new GameCard(this, i, images[imagesLayoutPlan[i]]);
             gameCard.setId(View.generateViewId());
-
-//            gameCard.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if(isFalse)
-//                        return;
-//                    flip(view);
-//                    pgbar.setProgress(matchesCounter);
-//                    progressInfo.setText(String.format("%s / %s",matchesCounter,6));
-//
-//                    if(startCount){
-//                        setTimerView(timerView);
-//                        startCount = false;
-//                    }
-//                }
-//            });
-
-            //grid.addView(tempButton);
 
             //saving the reference to button
             cards[i] = gameCard;
@@ -202,63 +182,60 @@ public class PlayActivity extends AppCompatActivity {
             prevCard = cards[position];
             flip(prevCard, currentView);
         }
-
-        ImageView prevView = grid.findViewById(prevCard.getPositionOnScreen());
-        if(prevCard.getId() == currentCard.getId()){
-            return;
-        }
-        if(prevCard.getFrontImage() == currentCard.getFrontImage()){
-            flip(currentCard, currentView);
-
-            prevCard.setMatched(true);
-            currentCard.setMatched(true);
-//            currentView.setEnabled(false);
-//            prevView.setEnabled(false);
-
-            soundPool.play(match,1,1,0,0,1);
-
-            prevCard = null;
-
-            matchesCounter++;
-            totalClicks++;
-            //updating match progress
-            if(matchesCounter == 6){
-                movesView.setText("Congrats!");
-                timerView.stop();
-                bgm.stop();
-                soundPool.play(win,1,1,0,0,1);
-                //startActivity(intent);
-                //can add timer stop
-            }
-            else{
-                movesView.setText("Moves: " + totalClicks);
-            }
-            return;
-        }
         else {
-            flip(currentCard, currentView);
-            soundPool.play(miss,1,1,0,0,1);
-            isBusy = true;
-            totalClicks++;
-            movesView.setText("Moves: " + totalClicks);
+            ImageView prevView = grid.findViewById(prevCard.getPositionOnScreen());
+            if (prevCard.getId() == currentCard.getId()) {
+                return;
+            }
+            if (prevCard.getFrontImage() == currentCard.getFrontImage()) {
+                flip(currentCard, currentView);
 
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    flip(prevCard, prevView);
-                    flip(currentCard, currentView);
-                    prevCard = null;
-                    isBusy = false;
+                prevCard.setMatched(true);
+                currentCard.setMatched(true);
+
+                soundPool.play(match, 1, 1, 0, 0, 1);
+
+                prevCard = null;
+
+                matchesCounter++;
+                totalClicks++;
+                //updating match progress
+                if (matchesCounter == 6) {
+                    movesView.setText("Congrats!");
+                    timerView.stop();
+                    bgm.stop();
+                    soundPool.play(win, 1, 1, 0, 0, 1);
+                    startActivity(intent);
+                    //can add timer stop
+                } else {
+                    movesView.setText("Moves: " + totalClicks);
                 }
-            }, 500);
+
+            } else {
+                flip(currentCard, currentView);
+                soundPool.play(miss, 1, 1, 0, 0, 1);
+                isBusy = true;
+                totalClicks++;
+                movesView.setText("Moves: " + totalClicks);
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        flip(prevCard, prevView);
+                        flip(currentCard, currentView);
+                        prevCard = null;
+                        isBusy = false;
+                    }
+                }, 500);
+            }
         }
     }
 
-    public void flip(GameCard card, ImageView view){
-        if(card.isMatched()){
+    public void flip(GameCard card, ImageView view) {
+        if(card.isMatched()) {
             return;
         }
-        if(card.isFlipped()){
+        if(card.isFlipped()) {
             view.setImageBitmap(card.getBackImage());
             card.setFlipped(false);
         }
@@ -280,7 +257,7 @@ public class PlayActivity extends AppCompatActivity {
                 if(SystemClock.elapsedRealtime() - timerView.getBase() > 0){
                     timerView.stop();
                     isFalse=true;
-                    movesView.setText("You Lose!");
+                    movesView.setText(R.string.lose);
                     bgm.stop();
                     soundPool.play(lose,1,1,0,0,1);
                     matchesCounter =6;

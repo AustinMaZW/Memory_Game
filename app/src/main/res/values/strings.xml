@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Memory Game</string>
-    <string name="moves">Moves: 0</string>
+    <string name="move0">Moves: 0</string>
+    <string name="lose">You Lose!</string>
     <string name="select_6">Select 6 images to start playing</string>
     <string name="click_fetch">Click \'FETCH\' to download images</string>
     <string name="download_starting">Download starting...</string>

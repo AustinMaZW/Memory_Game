@@ -41,9 +41,9 @@ public class GameAdapter extends BaseAdapter {
         }
         else {
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(230, 230));
+            imageView.setLayoutParams(new GridView.LayoutParams(350, 350));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(0, 10, 0, 10);
+            imageView.setPadding(0, 0, 0, 0);
         }
 
         if (!mGameCards[i].isFlipped())

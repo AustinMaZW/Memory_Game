@@ -29,8 +29,8 @@
                 style="@android:style/Widget.ProgressBar.Horizontal"
                 android:layout_width="200dp"
                 android:layout_height="20dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginStart="5dp"
                 android:max="6"
                 android:progress="0"
                 android:progressTint="#8BC34A" />
@@ -40,8 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="10sp"/>
-
+                android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -56,15 +55,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:textSize="20sp"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginStart="10dp" />
             <TextView
                 android:id="@+id/movesView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/moves"
+                android:text="@string/move0"
                 android:textSize="20sp"
                 android:layout_gravity="end"
-                android:layout_marginLeft="10dp"/>
+                android:layout_marginStart="10dp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -75,21 +74,12 @@
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/topLayout"
         app:layout_constraintBottom_toBottomOf="parent">
-
-<!--        <GridLayout-->
-<!--            android:id="@+id/gridLayout"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_gravity="center_vertical"-->
-<!--            android:columnCount="3"-->
-<!--            android:rowCount="4"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-<!--        </GridLayout>-->
         <GridView
             android:id="@+id/gridView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center"
             android:numColumns="3"
             app:layout_constraintTop_toTopOf="parent"/>
     </LinearLayout>
