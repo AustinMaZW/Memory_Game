@@ -8,6 +8,7 @@
     <string name="cannot_access_url">Cannot access URL, please try again</string>
     <string name="start">Start</string>
     <string name="credits">Credits</string>
+    <string name="fetchBtn">Fetch</string>
     <string name="description">Description</string>
     <string name="game_title">Memory Game</string>
     <string name="the_memory_game">The Memory Game</string>
