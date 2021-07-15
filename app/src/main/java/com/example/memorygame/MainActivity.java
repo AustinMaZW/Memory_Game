@@ -2,6 +2,7 @@ package com.example.memorygame;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         mImageAdaptor = new SelectImageAdaptor(this, imgBmps);
         gridView.setAdapter(mImageAdaptor);
 
+        fetchUrl = findViewById(R.id.url_input);
         progressBar = findViewById(R.id.progress_bar);
         viewFlipper= findViewById(R.id.view_flipper);
         progressTextView = findViewById(R.id.progress_textview);
@@ -74,12 +77,17 @@ public class MainActivity extends AppCompatActivity {
         fetchButton = findViewById(R.id.fetch_url);
         fetchButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                clearSettings();    //reset any settings
-                downloading=true;
-                viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
-                fetchUrl = findViewById(R.id.url_input);
                 String url = fetchUrl.getText().toString();
-                startDownloadImage(url);
+                if(isURL(url)){
+                    clearSettings();    //reset any settings
+                    progressTextView.setText(R.string.download_starting);
+                    downloading=true;
+                    viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
+                    startDownloadImage(url);
+                }else{
+                    progressTextView.setText(R.string.invalid_url);
+                    progressTextView.setTextColor(Color.RED);
+                }
             }
         });
 
@@ -91,16 +99,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public boolean isURL(String url){
+        //use Pattern's regex library to check if user url is valid
+        return Patterns.WEB_URL.matcher(url).matches();
+    }
+
     public void startDownloadImage(String url){
         //creating a background thread
         dlThread = new Thread(new Runnable() {
             @Override
             public void run(){
                 ImageDownloader imgDL = new ImageDownloader();
+
                 String[] imgURLs = new String[0];
-
-
                 imgURLs = imgDL.fetchImageTags(url);
+                if(imgURLs==null){
+                    runOnUiThread(new Runnable(){
+                        @Override
+                        public void run(){
+                            //if imagesURLs is null, then reflect back to user on UI thread
+                            progressTextView.setText(R.string.cannot_access_url);
+                            progressTextView.setTextColor(Color.RED);
+                        }
+                    });
+                }
 
                 int imgBtnNo=0;
                 if(imgURLs==null){return;} //if there is no imgtags or invalid url so couldn't fetch tags, return
@@ -191,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
             dlThread.interrupt();       //interrupt current dlthread
 
         progressBar.setProgress(0);
+        progressTextView.setTextColor(ContextCompat.getColor(this,R.color.prussian));
         progressTextView.setText(R.string.click_fetch);
 
         Arrays.fill(imgBmps, null);         //clear stored bitmap array
