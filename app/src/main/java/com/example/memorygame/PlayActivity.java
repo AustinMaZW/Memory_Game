@@ -239,6 +239,7 @@ public class PlayActivity extends AppCompatActivity {
                 movesView.setText("Congrats!");
                 timerView.stop();
                 bgm.stop();
+                soundPool.play(win,1,1,0,0,1);
                 startActivity(intent);
                 //can add timer stop
             }
@@ -250,6 +251,7 @@ public class PlayActivity extends AppCompatActivity {
         else {
             selectedButton2 = button;
             selectedButton2.flip();
+            soundPool.play(miss,1,1,0,0,1);
             isBusy = true;
             totalClicks++;
             movesView.setText("Moves: " + totalClicks);
@@ -298,6 +300,8 @@ public class PlayActivity extends AppCompatActivity {
                     timerView.stop();
                     isFalse=true;
                     movesView.setText("You Lose!");
+                    bgm.stop();
+                    soundPool.play(lose,1,1,0,0,1);
                     matchesCounter =6;
                 }
             }
