@@ -1,7 +1,9 @@
 package com.example.memorygame;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -9,9 +11,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,7 +34,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-public class PlayActivity extends AppCompatActivity {
+public class PlayActivity extends AppCompatActivity implements View.OnClickListener {
 
     String filepath = "game_cards";
     String filename = "image";
@@ -54,6 +61,13 @@ public class PlayActivity extends AppCompatActivity {
     private AlertDialog.Builder dlg;
     private AlertDialog.Builder failDlg;
 
+
+    int score;
+    long timeLeft;
+    AlertDialog alertDialog;
+    EditText name;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
 
 //    private long secondElapsed;
@@ -214,10 +228,14 @@ public class PlayActivity extends AppCompatActivity {
             //updating match progress
             if(matchesCounter == 6){
                 movesView.setText("Congrats!");
+                timeLeft = (SystemClock.elapsedRealtime() - timerView.getBase())*-1;
+                System.out.println("Time left:" + timeLeft);
                 timerView.stop();
+                calculateScore();
                 bgm.stop();
 //                startActivity(intent);
-                dlg.show();
+                enterHighScore();
+                //dlg.show();
                 //can add timer stop
             }
             else{
@@ -244,6 +262,11 @@ public class PlayActivity extends AppCompatActivity {
                 }
             }, 500);
         }
+    }
+
+    private void calculateScore() {
+        score = (int)timeLeft/10 + (int)1000/totalClicks;
+        System.out.println("Score:" + score);
     }
 
     /*private void showImage() {
@@ -275,17 +298,53 @@ public class PlayActivity extends AppCompatActivity {
                 if(SystemClock.elapsedRealtime() - timerView.getBase() > 0){
                     timerView.stop();
                     isFalse=true;
-                    movesView.setText("You Lose!");
+                    movesView.setText("You Lost!");
+                    bgm.stop();
                     matchesCounter =6;
                     failDlg.show();
                 }
             }
         });
     }
+
+    private void enterHighScore() {
+        LayoutInflater inflater = LayoutInflater.from(PlayActivity.this);
+        final View view = inflater.inflate(R.layout.dialog_save_score, null);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(PlayActivity.this);
+        dialog.setView(view);
+        dialog.setCancelable(false);
+        alertDialog = dialog.create();
+        final Button submitBtn = view.findViewById(R.id.submitBtn);
+        submitBtn.setOnClickListener(this);
+        TextView scoreView = view.findViewById(R.id.player_score);
+        scoreView.setText(" " + score + " points");
+        name = view.findViewById(R.id.name);
+        alertDialog.show();
+    }
+
+    public void onClick(View view) {
+        if(view.getId() == R.id.submitBtn) {
+            saveScore(name.getText().toString(), score);
+            alertDialog.dismiss();
+            Intent intent = new Intent(this, Leaderboard.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    void saveScore(String name, int score){
+        sharedPreferences = this.getSharedPreferences("leaderboard", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString("name", name);
+        editor.putInt("score", score);
+        editor.commit();
+    }
+
+
     private void setDialog(){
         this.dlg = new AlertDialog.Builder(this)
-                .setTitle("Congratulation")
-                .setMessage("You win!\n Do you want to play again")
+                .setTitle("Congratulations!")
+                .setMessage("You win!\nDo you want to play again?")
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -298,8 +357,8 @@ public class PlayActivity extends AppCompatActivity {
                     }
                 }).setIcon(R.drawable.ic_launcher_foreground);
         this.failDlg = new AlertDialog.Builder(this)
-                .setTitle("Congratulation")
-                .setMessage("You win!\n Do you want to play again")
+                .setTitle("Awwww :(")
+                .setMessage("You lost!\nDo you want to play again?")
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

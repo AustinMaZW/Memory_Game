@@ -25,6 +25,17 @@ public class MainPage extends AppCompatActivity {
             }
         });
 
+        Button leaderboardBtn = findViewById(R.id.leaderboard_btn);
+        leaderboardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (leaderboardBtn != null){
+                    Intent viewLeaderboard = new Intent(MainPage.this, Leaderboard.class);
+                    startActivity(viewLeaderboard);
+                }
+            }
+        });
+
         Button creditBtn = findViewById(R.id.credits_btn);
         creditBtn.setOnClickListener(new View.OnClickListener() {
             @Override
