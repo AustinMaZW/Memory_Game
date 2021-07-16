@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -56,6 +60,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private int totalClicks = 0;
     private Handler handler;
     MediaPlayer bgm;
+    private SoundPool soundPool;
+    private int match, miss, win, lose;
 
     private boolean startCount = true;
     private boolean isFalse = false;
@@ -87,9 +93,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         progressInfo = findViewById(R.id.progressInfo);
         intent = new Intent(this,MainActivity.class);
         handler = new Handler();
-        bgm = MediaPlayer.create(getApplicationContext(),R.raw.bgm);
-        bgm.start();
-        bgm.setLooping(true);
 
         numberOfCard = filenames.length * DOUBLE;
 
@@ -106,6 +109,27 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         shuffleCards();
 
         setImageOnView();
+
+        bgm = MediaPlayer.create(getApplicationContext(),R.raw.bgm);
+        bgm.start();
+        bgm.setLooping(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+            soundPool = new SoundPool.Builder()
+                    .setMaxStreams(4)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        } else {
+            soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+        }
+        match = soundPool.load(this, R.raw.match, 1);
+        miss = soundPool.load(this, R.raw.miss, 1);
+        win = soundPool.load(this, R.raw.win, 1);
+        lose = soundPool.load(this, R.raw.lose, 1);
     }
 
     void loadImages() {
@@ -184,6 +208,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             }
             if (prevCard.getFrontImage() == currentCard.getFrontImage()) {
                 flip(currentCard, currentView);
+                soundPool.play(match,1,1,0,0,1);
 
                 prevCard.setMatched(true);
                 currentCard.setMatched(true);
@@ -195,6 +220,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 //updating match progress
                 if(matchesCounter == 6){
                     movesView.setText("Congrats!");
+                    soundPool.play(win,1,1,0,0,1);
                     timeLeft = (SystemClock.elapsedRealtime() - timerView.getBase())*-1;
                     System.out.println("Time left:" + timeLeft);
                     timerView.stop();
@@ -215,6 +241,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 isBusy = true;
                 totalClicks++;
                 movesView.setText("Moves: " + totalClicks);
+                soundPool.play(miss,1,1,0,0,1);
 
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -261,6 +288,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     timerView.stop();
                     isFalse=true;
                     movesView.setText(R.string.lost);
+                    soundPool.play(lose,1,1,0,0,1);
                     bgm.stop();
                     matchesCounter =6;
                     failDlg.show();
