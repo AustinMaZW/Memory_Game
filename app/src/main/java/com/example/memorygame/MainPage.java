@@ -58,5 +58,7 @@ public class MainPage extends AppCompatActivity {
 
             }
         });
+
+        MyMediaPlayer.getMediaPlayerInstance().playAudioFile(this, R.raw.bgmmain);
     }
 }

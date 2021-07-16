@@ -219,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
         Intent _intent = new Intent(this,PlayActivity.class);
         _intent.putExtra("imgs", imgs);
         startActivity(_intent);
+        MyMediaPlayer.getMediaPlayerInstance().stopAudioFile();
     }
 
     public void clearSettings() {
