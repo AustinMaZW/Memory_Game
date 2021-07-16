@@ -44,6 +44,7 @@ public class Leaderboard extends AppCompatActivity {
             rank5 = lastScore;
             editor = sharedPreferences.edit();
             editor.putInt("rank5", rank5);
+            editor.remove("lastScore");
             editor.apply();
         }
         if(lastScore > rank4) {
@@ -53,6 +54,7 @@ public class Leaderboard extends AppCompatActivity {
             editor = sharedPreferences.edit();
             editor.putInt("rank5", rank5);
             editor.putInt("rank4", rank4);
+            editor.remove("lastScore");
             editor.apply();
         }
         if(lastScore > rank3) {
@@ -62,6 +64,7 @@ public class Leaderboard extends AppCompatActivity {
             editor = sharedPreferences.edit();
             editor.putInt("rank4", rank4);
             editor.putInt("rank3", rank3);
+            editor.remove("lastScore");
             editor.apply();
         }
         if(lastScore > rank2) {
@@ -71,6 +74,7 @@ public class Leaderboard extends AppCompatActivity {
             editor = sharedPreferences.edit();
             editor.putInt("rank3", rank3);
             editor.putInt("rank2", rank2);
+            editor.remove("lastScore");
             editor.apply();
         }
         if(lastScore > rank1) {
@@ -80,6 +84,7 @@ public class Leaderboard extends AppCompatActivity {
             editor = sharedPreferences.edit();
             editor.putInt("rank2", rank2);
             editor.putInt("rank1", rank1);
+            editor.remove("lastScore");
             editor.apply();
         }
 
