@@ -48,6 +48,14 @@
             android:text="@string/start" />
 
         <Button
+            android:id="@+id/leaderboard_btn"
+            android:layout_width="250dp"
+            android:layout_height="80dp"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:text="@string/leaderboard" />
+
+        <Button
             android:id="@+id/credits_btn"
             android:layout_width="250dp"
             android:layout_height="80dp"

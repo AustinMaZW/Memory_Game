@@ -1,7 +1,9 @@
 package com.example.memorygame;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -9,37 +11,46 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.GridLayout;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 
-public class PlayActivity extends AppCompatActivity {
+public class PlayActivity extends AppCompatActivity implements View.OnClickListener {
 
-    String filepath = "game_cards";
-    String filename = "image";
+    static final int DOUBLE = 2;
+
+    String[] filenames;
+    GridView grid;
     Chronometer timerView;
     TextView movesView;
-    int numberOfButtons;
-    GameCard[] buttons;
-    Bitmap[] buttonGraphics;
-    int[] buttonGraphicLocations;
-    private GameCard button;
-    private GameCard selectedButton1;
-    private GameCard selectedButton2;
+    GameAdapter adapter;
+    int numberOfCard;
+    // GameCard objects to bind to view using Adapter
+    GameCard[] cards;
+    // selected images to play
+    Bitmap[] images;
+    // store which image to be shown at position i (i = index of array)
+    int[] imagesLayoutPlan;
+
+    private GameCard prevCard;
+
     private boolean isBusy;
     private int matchesCounter = 0;
     private int totalClicks = 0;
@@ -55,20 +66,21 @@ public class PlayActivity extends AppCompatActivity {
     private AlertDialog.Builder failDlg;
 
 
-
-//    private long secondElapsed;
-//
-//    private Runnable runnable = null;
-//    private Handler handler;
-//    private boolean mStarted;
-
-    List<Bitmap> gameCards;
+    int score;
+    long timeLeft;
+    AlertDialog alertDialog;
+    EditText name;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
         setDialog();
+
+        Intent mainActivity = getIntent();
+        filenames = mainActivity.getStringArrayExtra("imgs");
         timerView = findViewById(R.id.timerView);
         movesView = findViewById(R.id.movesView);
         pgbar = findViewById(R.id.pgbar);
@@ -79,190 +91,163 @@ public class PlayActivity extends AppCompatActivity {
         bgm.start();
         bgm.setLooping(true);
 
-        // get images from drawable and save inside app-specific external folder
-        // for testing purpose only. will delete after combining with activity1
-        saveImages();
+        numberOfCard = filenames.length * DOUBLE;
 
-        // load images on screen
-        showImages();
-    }
+        cards = new GameCard[numberOfCard];
+        adapter = new GameAdapter(this, cards);
 
-    void saveImages(){
-        for(int i = 0; i < 6; i++){
-            File file = new File(getExternalFilesDir(null), filepath + "/" + filename + i);
-            if(file.exists())
-                file.delete();
-            File parent = file.getParentFile();
-            if (!parent.exists() && !parent.mkdirs()) {
-                throw new IllegalStateException(
-                        "Couldn't create dir: " + parent);
-            }
+        grid = findViewById(R.id.gridView);
+        grid.setAdapter(adapter);
 
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(file, false);
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                int drawableID = this.getResources().getIdentifier(filename + i, "drawable", getPackageName());
-                Bitmap bmp = BitmapFactory.decodeResource(getResources(), drawableID);
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                byte[] bytes = byteArrayOutputStream.toByteArray();
-                fileOutputStream.write(bytes);
-                fileOutputStream.close();
-            } catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-    void showImages() {
-        GridLayout grid = findViewById(R.id.gridLayout);
-        int numberOfC = grid.getColumnCount();
-        int numberOfR = grid.getRowCount();
-        numberOfButtons = numberOfC * numberOfR;
-
-        buttons = new GameCard[numberOfButtons];
-        buttonGraphics = new Bitmap[numberOfButtons / 2];
+        images = new Bitmap[filenames.length];
         loadImages();
 
-        buttonGraphicLocations = new int[numberOfButtons];
-        setImageOnView(numberOfR, numberOfC);
+        imagesLayoutPlan = new int[numberOfCard];
+        shuffleCards();
+
+        setImageOnView();
     }
 
-    void loadImages(){
-        //gameCards = new ArrayList<Bitmap>();
-        Intent _intent = getIntent();
-        String[] _imgs = _intent.getStringArrayExtra("imgs");
-        for(int i = 0; i < 6; i++){
-            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), _imgs[i]);
+    void loadImages() {
+        for(int i = 0; i < filenames.length; i++) {
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), filenames[i]);
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-                buttonGraphics[i] = bitmap;
-                //gameCards.add(bitmap);
+                int scale = (int) getResources().getDisplayMetrics().density * 150;
+                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
+                images[i] = bitmap;
             } catch(IOException e){
                 e.printStackTrace();
             }
         }
     }
-    private void shuffle(){
+
+    private void shuffleCards() {
         Random rand = new Random();
-        for(int i = 0; i < numberOfButtons; i++){
-            buttonGraphicLocations[i] = i % (numberOfButtons / 2);
+        for(int i = 0; i < numberOfCard; i++) {
+            imagesLayoutPlan[i] = i % (numberOfCard / 2);
         }
-        for(int i = 0; i < numberOfButtons; i++){
-            int temp = buttonGraphicLocations[i];
-            int swap = rand.nextInt(12);
-            buttonGraphicLocations[i] = buttonGraphicLocations[swap];
-            buttonGraphicLocations[swap] = temp;
-        }
-    }
-    private void setImageOnView(int numberOfR, int numberOfC) {
-        shuffle();
-        GridLayout grid = findViewById(R.id.gridLayout);
-        for(int row = 0; row < numberOfR; row++){
-            for(int column = 0; column < numberOfC; column++){
-                GameCard tempButton = new GameCard(this, row, column, buttonGraphics[buttonGraphicLocations[row * numberOfC + column]]);
-                tempButton.setId(View.generateViewId());
-                Log.i("msg", String.valueOf(tempButton.getId()));
-                tempButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(isFalse)
-                            return;
-                        flip(view);
-                        pgbar.setProgress(matchesCounter);
-                        progressInfo.setText(String.format("%s / %s",matchesCounter,6));
-
-                        if(startCount){
-                            setTimerView(timerView);
-                            startCount = false;
-                        }
-                    }
-                });
-
-                grid.addView(tempButton);
-
-                //saving the reference to button
-                buttons[row*numberOfC + column] = tempButton;
-            }
+        for(int i = 0; i < numberOfCard; i++) {
+            int rndPosition = rand.nextInt(12);
+            // swap
+            int value = imagesLayoutPlan[i];
+            imagesLayoutPlan[i] = imagesLayoutPlan[rndPosition];
+            imagesLayoutPlan[rndPosition] = value;
         }
     }
 
-    private void flip(View view) {
-        button = (GameCard) view;
-        if(isBusy){
-            return;
+    private void setImageOnView() {
+        for(int i = 0; i < numberOfCard; i++) {
+            GameCard gameCard = new GameCard(this, i, images[imagesLayoutPlan[i]]);
+            gameCard.setId(View.generateViewId());
+
+            //saving the reference to button
+            cards[i] = gameCard;
         }
-        if(selectedButton1 == null){
-            selectedButton1 = button;
-            selectedButton1.flip();
-        }
-        if(selectedButton1.getId() == button.getId()){
-            return;
-        }
-        if(selectedButton1.getFrontImageId() == button.getFrontImageId()){
-            button.flip();
 
-            button.setMatched(true);
+        adapter.setmGameCards(cards);
 
-            selectedButton1.setEnabled(false);
-            button.setEnabled(false);
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(isFalse)
+                    return;
 
-            selectedButton1 = null;
+                checkCardIsMatched(view, position);
 
-            matchesCounter++;
-            totalClicks++;
-            //updating match progress
-            if(matchesCounter == 6){
-                movesView.setText("Congrats!");
-                timerView.stop();
-                bgm.stop();
-//                startActivity(intent);
-                dlg.show();
-                //can add timer stop
+                pgbar.setProgress(matchesCounter);
+                progressInfo.setText(String.format("%s / %s",matchesCounter,6));
+
+                if(startCount){
+                    setTimerView(timerView);
+                    startCount = false;
+                }
             }
-            else{
-                movesView.setText("Moves: " + totalClicks);
-            }
+        });
+    }
+
+    private void checkCardIsMatched(View view, int position) {
+        ImageView currentView = (ImageView) view;
+        GameCard currentCard = cards[position];
+        if(isBusy || currentCard.isMatched()) {
             return;
+        }
+        if(prevCard == null){
+            prevCard = cards[position];
+            flip(prevCard, currentView);
         }
         else {
-            selectedButton2 = button;
-            selectedButton2.flip();
-            isBusy = true;
-            totalClicks++;
-            movesView.setText("Moves: " + totalClicks);
+            ImageView prevView = grid.findViewById(prevCard.getPositionOnScreen());
+            if (prevCard.getId() == currentCard.getId()) {
+                return;
+            }
+            if (prevCard.getFrontImage() == currentCard.getFrontImage()) {
+                flip(currentCard, currentView);
 
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    selectedButton1.flip();
-                    selectedButton2.flip();
-                    selectedButton1 = null;
-                    selectedButton2 = null;
-                    isBusy = false;
-//                    toast.cancel();
+                prevCard.setMatched(true);
+                currentCard.setMatched(true);
+
+                prevCard = null;
+
+                matchesCounter++;
+                totalClicks++;
+                //updating match progress
+                if(matchesCounter == 6){
+                    movesView.setText("Congrats!");
+                    timeLeft = (SystemClock.elapsedRealtime() - timerView.getBase())*-1;
+                    System.out.println("Time left:" + timeLeft);
+                    timerView.stop();
+                    calculateScore();
+                    bgm.stop();
+    //                startActivity(intent);
+                    enterHighScore();
+//                    dlg.show();
+                    //can add timer stop
                 }
-            }, 500);
+                else{
+                    movesView.setText("Moves: " + totalClicks);
+                }
+
+            }
+            else {
+                flip(currentCard, currentView);
+                isBusy = true;
+                totalClicks++;
+                movesView.setText("Moves: " + totalClicks);
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        flip(prevCard, prevView);
+                        flip(currentCard, currentView);
+                        prevCard = null;
+                        isBusy = false;
+                    }
+                }, 500);
+            }
         }
     }
 
-    /*private void showImage() {
-        String uri = "drawable/icon";
+    public void flip(GameCard card, ImageView view) {
+        if(card.isMatched()) {
+            return;
+        }
+        if(card.isFlipped()) {
+            view.setImageBitmap(card.getBackImage());
+            card.setFlipped(false);
+        }
+        else {
+            view.setImageBitmap(card.getFrontImage());
+            card.setFlipped(true);
+        }
+    }
 
-        // int imageResource = R.drawable.icon;
-        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+    private void calculateScore() {
+        score = (int)timeLeft/10 + (int)1000/totalClicks;
+        System.out.println("Score:" + score);
+    }
 
-//        ImageView imageView = (ImageView) findViewById(R.id.myImageView);
-//        Drawable image = getResources().getDrawable(imageResource);
-//        imageView.setImageDrawable(image);
-
-//        int imageResource = R.drawable.icon;
-//        Drawable image = getResources().getDrawable(imageResource);
-
-//        ImageView iv = new ImageView(this);
-//        int drawableID = this.getResources().getIdentifier("bitmap0", "drawable", getPackageName());
-//        iv.setImageResource(drawableID);
-    }*/
     private void setTimerView(Chronometer timerView){
         timerView.setBase(SystemClock.elapsedRealtime() + 30000);
         timerView.setCountDown(true);
@@ -275,17 +260,64 @@ public class PlayActivity extends AppCompatActivity {
                 if(SystemClock.elapsedRealtime() - timerView.getBase() > 0){
                     timerView.stop();
                     isFalse=true;
-                    movesView.setText("You Lose!");
+                    movesView.setText(R.string.lost);
+                    bgm.stop();
                     matchesCounter =6;
                     failDlg.show();
                 }
             }
         });
     }
+
+    private void enterHighScore() {
+        LayoutInflater inflater = LayoutInflater.from(PlayActivity.this);
+        final View view = inflater.inflate(R.layout.dialog_save_score, null);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(PlayActivity.this);
+        dialog.setView(view);
+        dialog.setCancelable(false);
+        alertDialog = dialog.create();
+        final Button leaderboardBtn = view.findViewById(R.id.leaderboardBtn);
+        leaderboardBtn.setOnClickListener(this);
+
+        Button playAgainBtn = view.findViewById(R.id.playAgainBtn);
+        playAgainBtn.setOnClickListener(this);
+        TextView scoreView = view.findViewById(R.id.player_score);
+        scoreView.setText("You got " + score + " points!");
+        alertDialog.show();
+    }
+
+    public void onClick(View view) {
+        if(view.getId() == R.id.leaderboardBtn) {
+            saveScore(score);
+            alertDialog.dismiss();
+            Intent intent = new Intent(this, Leaderboard.class);
+            startActivity(intent);
+            finish();
+        }
+        if(view.getId() == R.id.playAgainBtn) {
+            saveScore(score);
+            alertDialog.dismiss();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    void saveScore(int score){
+        sharedPreferences = getSharedPreferences("leaderboard",0);
+        editor = sharedPreferences.edit();
+        editor.putInt("lastScore", score);
+        editor.apply();
+
+        Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
+        startActivity(intent);
+        finish();
+    }
+
     private void setDialog(){
         this.dlg = new AlertDialog.Builder(this)
-                .setTitle("Congratulation")
-                .setMessage("You win!\n Do you want to play again")
+                .setTitle("Congratulations!")
+                .setMessage("You win!\nDo you want to play again?")
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -298,8 +330,8 @@ public class PlayActivity extends AppCompatActivity {
                     }
                 }).setIcon(R.drawable.ic_launcher_foreground);
         this.failDlg = new AlertDialog.Builder(this)
-                .setTitle("Congratulation")
-                .setMessage("You win!\n Do you want to play again")
+                .setTitle("Awwww :(")
+                .setMessage("You lost!\nDo you want to play again?")
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -312,6 +344,4 @@ public class PlayActivity extends AppCompatActivity {
                     }
                 }).setIcon(R.drawable.ic_launcher_foreground);
     }
-
-
 }

@@ -33,41 +33,141 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="24dp"
             android:text="Rank"
             android:textAlignment="center"
-            android:layout_weight="1.3"/>
-        <TextView
-            android:id="@+id/player_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="Name"
-            android:textAlignment="center"
-            android:layout_weight="2"/>
+            android:layout_weight="1"/>
+
         <TextView
             android:id="@+id/player_score"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="24dp"
             android:text="Score"
             android:textAlignment="center"
-            android:layout_weight="2"/>
+            android:layout_weight="3"/>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/leaderboard_body"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <LinearLayout
+        android:id="@+id/rank1"
         app:layout_constraintTop_toBottomOf="@id/leaderboard_header"
-        app:layout_constraintBottom_toTopOf="@id/leaderboard_footer"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="1"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/score1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:layout_weight="3"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rank2"
+        app:layout_constraintTop_toBottomOf="@id/rank1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="2"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/score2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:layout_weight="3"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rank3"
+        app:layout_constraintTop_toBottomOf="@id/rank2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="3"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/score3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:layout_weight="3"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rank4"
+        app:layout_constraintTop_toBottomOf="@id/rank3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="4"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/score4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:layout_weight="3"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rank5"
+        app:layout_constraintTop_toBottomOf="@id/rank4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="5"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/score5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:layout_weight="3"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/leaderboard_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent">
         <Button
             android:id="@+id/homeBtn"
