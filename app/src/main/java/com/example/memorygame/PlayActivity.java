@@ -31,6 +31,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -78,12 +80,13 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     EditText name;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    int rank5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-        setDialog();
+//        setDialog();
 
         Intent mainActivity = getIntent();
         filenames = mainActivity.getStringArrayExtra("imgs");
@@ -138,8 +141,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-                //int scale = (int) getResources().getDisplayMetrics().density * 150;
-                //bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
+//                int scale = (int) getResources().getDisplayMetrics().density * 150;
+//                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
                 images[i] = bitmap;
             } catch(IOException e){
                 e.printStackTrace();
@@ -271,7 +274,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void calculateScore() {
-        score = (int)timeLeft/10 + (int)1000/totalClicks;
+        score = (int)timeLeft*10 + (int)1000/totalClicks;
         System.out.println("Score:" + score);
     }
 
@@ -291,7 +294,9 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     soundPool.play(lose,0.3f,0.3f,0,0,1);
                     bgm.stop();
                     matchesCounter =6;
-                    failDlg.show();
+                    score = -1;
+//                    failDlg.show();
+                    enterHighScore();
                 }
             }
         });
@@ -304,13 +309,37 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         dialog.setView(view);
         dialog.setCancelable(false);
         alertDialog = dialog.create();
+
+        TextView dialogGreeting = view.findViewById(R.id.dialogGreeting);
+        TextView dialogResult = view.findViewById(R.id.dialogResult);
+
         final Button leaderboardBtn = view.findViewById(R.id.leaderboardBtn);
         leaderboardBtn.setOnClickListener(this);
 
         Button playAgainBtn = view.findViewById(R.id.playAgainBtn);
         playAgainBtn.setOnClickListener(this);
-        TextView scoreView = view.findViewById(R.id.player_score);
-        scoreView.setText("You got " + score + " points!");
+
+        //check high score
+        sharedPreferences = getSharedPreferences("leaderboard", 0);
+        rank5 = sharedPreferences.getInt("rank5", 0);
+
+        if(score > rank5) {
+            //new high score
+            dialogGreeting.setText("Congratulations!");
+            dialogResult.setText("New high score!");
+            TextView scoreView = (TextView) view.findViewById(R.id.score);
+            scoreView.setText("You scored " + score + " points!");
+        } else if(score > 0) {
+            //you won
+            dialogGreeting.setText("Congratulations!");
+            TextView scoreView = (TextView) view.findViewById(R.id.score);
+            scoreView.setText("You scored " + score + " points!");
+        } else if(score < 0) {
+            //you lost
+            dialogGreeting.setText("Aww :(");
+            dialogResult.setText("You ran out of time.");
+        }
+
         alertDialog.show();
     }
 
@@ -342,7 +371,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         finish();
     }
 
-    private void setDialog(){
+//    private void setDialog(){
 //        this.dlg = new AlertDialog.Builder(this)
 //                .setTitle("Congratulations!")
 //                .setMessage("You win!\nDo you want to play again?")
@@ -359,21 +388,21 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 //                        //recreate();
 //                    }
 //                }).setIcon(R.drawable.ic_launcher_foreground);
-        this.failDlg = new AlertDialog.Builder(this)
-                .setTitle("Awwww :(")
-                .setMessage("You lost!\nDo you want to play again?")
-                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(intent);
-                    }
-                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent mpIntent  = new Intent(PlayActivity.this, MainPage.class);
-                        startActivity(mpIntent);
-                        //recreate();;
-                    }
-                }).setIcon(R.drawable.ic_launcher_foreground);
-    }
+//        this.failDlg = new AlertDialog.Builder(this)
+//                .setTitle("Awwww :(")
+//                .setMessage("You lost!\nDo you want to play again?")
+//                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(intent);
+//                    }
+//                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Intent mpIntent  = new Intent(PlayActivity.this, MainPage.class);
+//                        startActivity(mpIntent);
+//                        //recreate();;
+//                    }
+//                }).setIcon(R.drawable.ic_launcher_foreground);
+//    }
 }

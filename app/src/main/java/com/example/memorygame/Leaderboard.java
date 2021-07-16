@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Leaderboard extends AppCompatActivity {
 
     TextView score1, score2, score3, score4, score5;
@@ -80,11 +83,41 @@ public class Leaderboard extends AppCompatActivity {
             editor.apply();
         }
 
-        score1.setText("" + rank1);
-        score2.setText("" + rank2);
-        score3.setText("" + rank3);
-        score4.setText("" + rank4);
-        score5.setText("" + rank5);
+        if(rank1 != 0) {
+            TextView no1 = (TextView) findViewById(R.id.no1);
+            no1.setText("1");
+            score1.setText(""+rank1);
+        }
+
+        if(rank2 != 0) {
+            TextView no2 = (TextView) findViewById(R.id.no2);
+            no2.setText("2");
+            score2.setText(""+rank2);
+        }
+
+        if(rank3 != 0) {
+            TextView no3 = (TextView) findViewById(R.id.no3);
+            no3.setText("3");
+            score3.setText(""+rank3);
+        }
+
+        if(rank4 != 0) {
+            TextView no4 = (TextView) findViewById(R.id.no4);
+            no4.setText("4");
+            score4.setText(""+rank4);
+        }
+
+        if(rank5 != 0) {
+            TextView no5 = (TextView) findViewById(R.id.no5);
+            no5.setText("5");
+            score5.setText(""+rank5);
+        }
+
+//        score1.setText("" + rank1);
+//        score2.setText("" + rank2);
+//        score3.setText("" + rank3);
+//        score4.setText("" + rank4);
+//        score5.setText("" + rank5);
 
         Button homeBtn = findViewById(R.id.homeBtn);
         homeBtn.setOnClickListener(new View.OnClickListener() {
