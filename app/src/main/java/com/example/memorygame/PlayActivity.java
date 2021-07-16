@@ -138,8 +138,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-                int scale = (int) getResources().getDisplayMetrics().density * 150;
-                bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
+                //int scale = (int) getResources().getDisplayMetrics().density * 150;
+                //bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale,true);
                 images[i] = bitmap;
             } catch(IOException e){
                 e.printStackTrace();
@@ -208,7 +208,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             }
             if (prevCard.getFrontImage() == currentCard.getFrontImage()) {
                 flip(currentCard, currentView);
-                soundPool.play(match,1,1,0,0,1);
+                soundPool.play(match,0.2f,0.2f,0,0,1);
 
                 prevCard.setMatched(true);
                 currentCard.setMatched(true);
@@ -220,7 +220,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 //updating match progress
                 if(matchesCounter == 6){
                     movesView.setText("Congrats!");
-                    soundPool.play(win,1,1,0,0,1);
+                    soundPool.play(win,0.3f,0.3f,0,0,1);
                     timeLeft = (SystemClock.elapsedRealtime() - timerView.getBase())*-1;
                     System.out.println("Time left:" + timeLeft);
                     timerView.stop();
@@ -241,7 +241,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 isBusy = true;
                 totalClicks++;
                 movesView.setText("Moves: " + totalClicks);
-                soundPool.play(miss,1,1,0,0,1);
+                soundPool.play(miss,0.2f,0.2f,0,0,1);
 
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -288,7 +288,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     timerView.stop();
                     isFalse=true;
                     movesView.setText(R.string.lost);
-                    soundPool.play(lose,1,1,0,0,1);
+                    soundPool.play(lose,0.3f,0.3f,0,0,1);
                     bgm.stop();
                     matchesCounter =6;
                     failDlg.show();
@@ -343,20 +343,22 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setDialog(){
-        this.dlg = new AlertDialog.Builder(this)
-                .setTitle("Congratulations!")
-                .setMessage("You win!\nDo you want to play again?")
-                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(intent);
-                    }
-                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        recreate();
-                    }
-                }).setIcon(R.drawable.ic_launcher_foreground);
+//        this.dlg = new AlertDialog.Builder(this)
+//                .setTitle("Congratulations!")
+//                .setMessage("You win!\nDo you want to play again?")
+//                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(intent);
+//                    }
+//                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Intent mpIntent  = new Intent(PlayActivity.this, MainPage.class);
+//                        startActivity(mpIntent);
+//                        //recreate();
+//                    }
+//                }).setIcon(R.drawable.ic_launcher_foreground);
         this.failDlg = new AlertDialog.Builder(this)
                 .setTitle("Awwww :(")
                 .setMessage("You lost!\nDo you want to play again?")
@@ -368,7 +370,9 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        recreate();;
+                        Intent mpIntent  = new Intent(PlayActivity.this, MainPage.class);
+                        startActivity(mpIntent);
+                        //recreate();;
                     }
                 }).setIcon(R.drawable.ic_launcher_foreground);
     }
