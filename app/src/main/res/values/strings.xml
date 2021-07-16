@@ -7,7 +7,7 @@
     <string name="download_starting">Download starting...</string>
     <string name="invalid_url">"Invalid URL, please enter again"</string>
     <string name="cannot_access_url">Cannot access URL, please try again</string>
-    <string name="cannot_retrieve_imgs">Cannot retrieve images, please try again</string>
+    <string name="cannot_retrieve_imgs">Insufficient images, please fetch again</string>
     <string name="start">Start</string>
     <string name="credits">Credits</string>
     <string name="fetchBtn">Fetch</string>
@@ -16,11 +16,12 @@
     <string name="the_memory_game">The Memory Game</string>
     <string name="description_overview">Testing of your memory using pictures you have selected.</string>
     <string name="how_to_play">How To Play</string>
-    <string name="description_body">1.Search for a category of pictures e.g. \'nature\' or \'music\' or enter url to search.
+    <string name="description_body">1.Search for a category* of pictures e.g. \'nature\' or \'music\' or enter url to search.
         \n\n2.Select 6 pictures and your game will load.
         \n\n3.Turn over any two cards.
         \n\n4.If the cards match, you get a point. If they don\'t, they will turn back over.
         \n\n5.The game ends when all cards have been matched.
+        \n\n*Searched term is retrieved from http://stocksnap.io/search.
     </string>
     <string name="credits_body_group">Team 10:
         \n\nChua Ya Zhen

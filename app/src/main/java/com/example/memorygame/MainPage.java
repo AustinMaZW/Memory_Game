@@ -59,6 +59,7 @@ public class MainPage extends AppCompatActivity {
             }
         });
 
+        MyMediaPlayer.getMediaPlayerInstance().stopAudioFile();
         MyMediaPlayer.getMediaPlayerInstance().playAudioFile(this, R.raw.bgmmain);
     }
 }
