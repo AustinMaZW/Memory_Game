@@ -20,7 +20,7 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".viewCreditsActivity" 
                   android:screenOrientation="portrait"/>
-        <activity android:name=".MainActivity" 
+        <activity android:name=".FetchImgActivity"
                   android:screenOrientation="portrait"/>
         <activity android:name=".MainPage"
                   android:screenOrientation="portrait">

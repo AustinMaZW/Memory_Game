@@ -1,7 +1,5 @@
 package com.example.memorygame;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -15,8 +13,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,8 +26,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -94,7 +88,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         movesView = findViewById(R.id.movesView);
         pgbar = findViewById(R.id.pgbar);
         progressInfo = findViewById(R.id.progressInfo);
-        intent = new Intent(this,MainActivity.class);
+        intent = new Intent(this, FetchImgActivity.class);
         handler = new Handler();
 
         numberOfCard = filenames.length * DOUBLE;
@@ -354,7 +348,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         if(view.getId() == R.id.playAgainBtn) {
             saveScore(score);
             alertDialog.dismiss();
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, FetchImgActivity.class);
             startActivity(intent);
             finish();
         }

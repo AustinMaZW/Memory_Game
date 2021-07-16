@@ -1,7 +1,6 @@
 package com.example.memorygame;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Patterns;
@@ -18,28 +16,17 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-import android.widget.ViewSwitcher;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class FetchImgActivity extends AppCompatActivity {
     //views
     private Button fetchButton;
     private EditText fetchUrl;
@@ -61,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_fetch_img);
 
         //testing gridview
         gridView = findViewById(R.id.gridview);
@@ -92,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
                     downloading=true;
                     viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.progress_textview)));
                     startDownloadImage(url);
-//                    progressTextView.setText(R.string.invalid_url);
-//                    progressTextView.setTextColor(Color.RED);
                 }
             }
         });
@@ -186,10 +171,10 @@ public class MainActivity extends AppCompatActivity {
                 ImageView itemView = (ImageView) gridView.getAdapter().getView(position, v, parent);
 
                 if(selectedImgFileNames.contains(imageName)){
-                    itemView.clearColorFilter();
+                    itemView.setImageAlpha(255);
                     selectedImgFileNames.remove(imageName);
                 }else if(selectedImgFileNames.size()<6){
-                    itemView.setColorFilter(Color.rgb(255,104,196), PorterDuff.Mode.OVERLAY);
+                    itemView.setImageAlpha(100);
                     selectedImgFileNames.add(imageName);
                 }
                 checkSelectedImgs();

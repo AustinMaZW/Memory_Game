@@ -7,11 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Leaderboard extends AppCompatActivity {
 
@@ -140,7 +136,7 @@ public class Leaderboard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (playAgainBtn != null){
-                    Intent startGame = new Intent(Leaderboard.this, MainActivity.class);
+                    Intent startGame = new Intent(Leaderboard.this, FetchImgActivity.class);
                     startActivity(startGame);
                 }
             }
