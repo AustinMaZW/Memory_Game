@@ -11,10 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MemoryGame">
-        <activity android:name=".Leaderboard"></activity>
+        <activity android:name=".Leaderboard"
+            android:screenOrientation="portrait"
+            ></activity>
         <activity
             android:name=".PlayActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -23,10 +26,14 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".viewDescriptionActivity" />
-        <activity android:name=".viewCreditsActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".MainPage">
+        <activity android:name=".viewDescriptionActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".viewCreditsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MainPage"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
